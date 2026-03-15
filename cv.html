@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV — Ida Parelius</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── DESIGN TOKENS ──────────────────────── */
+    :root {
+      --bg:          #F8F7FF;
+      --surface:     #FFFFFF;
+      --text:        #1A1420;
+      --text-sec:    rgba(26,20,32,0.6);
+      --purple:      #4E3388;
+      --purple-mid:  #7055B8;
+      --purple-lite: #C4B0F0;
+      --border:      rgba(78,51,136,0.12);
+      --font:        'Space Grotesk', sans-serif;
+      --mono:        'Space Mono', monospace;
+      --r:           10px;
+      --ease:        ease-in-out 0.3s;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      opacity: 0;
+      animation: pageIn 0.6s ease-in-out 0.05s forwards;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── NAV ─────────────────────────────────── */
+    .nav-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248,247,255,0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-monogram {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--purple);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color var(--ease);
+    }
+    .nav-monogram:hover { color: var(--purple-mid); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      text-decoration: none;
+      padding: 4px 0;
+      position: relative;
+      transition: color var(--ease);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--purple);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-links a.active {
+      color: var(--purple);
+      font-weight: 700;
+    }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ── PAGE CONTENT ────────────────────────── */
+    .page-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 40px 100px;
+    }
+
+    /* ── PAGE HEADER ─────────────────────────── */
+    .cv-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 64px;
+      flex-wrap: wrap;
+    }
+
+    .page-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--purple-mid);
+      margin-bottom: 10px;
+    }
+
+    .cv-title {
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .cv-subtitle {
+      font-size: 1rem;
+      color: var(--text-sec);
+      font-weight: 400;
+    }
+
+    .btn-anchor {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: var(--r);
+      background: transparent;
+      color: var(--purple);
+      border: 1px solid var(--purple);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background var(--ease), color var(--ease), transform 0.2s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-anchor:hover {
+      background: var(--purple);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* ── SECTION HEADING ─────────────────────── */
+    .section-heading {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 28px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── EXPERIENCE SECTION ──────────────────── */
+    .experience-section {
+      margin-bottom: 72px;
+    }
+
+    /* ── TIMELINE ────────────────────────────── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 24px;
+      padding-bottom: 32px;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 8px;
+      bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .timeline-item:last-child::before {
+      display: none;
+    }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--purple);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 1px var(--purple);
+    }
+
+    .timeline-company {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+
+    .timeline-role {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple-mid);
+      margin-bottom: 4px;
+    }
+
+    .timeline-date {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--text-sec);
+      margin-bottom: 8px;
+    }
+
+    .timeline-desc {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--text-sec);
+    }
+
+    .timeline-link {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+      text-decoration: none;
+      border-bottom: 1px solid var(--purple-lite);
+      transition: color var(--ease), border-color var(--ease);
+    }
+    .timeline-link:hover {
+      color: var(--purple-mid);
+      border-color: var(--purple-mid);
+    }
+
+    /* ── EDUCATION ───────────────────────────── */
+    .education-section {
+      margin-bottom: 72px;
+      scroll-margin-top: 80px;
+    }
+
+    .edu-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .edu-degree {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .edu-institution {
+      font-size: 0.9rem;
+      color: var(--text-sec);
+    }
+
+    .edu-years {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--purple-mid);
+    }
+
+    /* ── COURSES ACCORDION ───────────────────── */
+    .courses-section {
+      scroll-margin-top: 80px;
+    }
+
+    .courses-intro {
+      font-size: 0.88rem;
+      color: var(--text-sec);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .course-semester-group {
+      margin-bottom: 36px;
+    }
+
+    .course-semester-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      margin-bottom: 8px;
+      padding-left: 2px;
+    }
+
+    details.course-details {
+      border-bottom: 1px solid var(--border);
+    }
+
+    details.course-details:first-of-type {
+      border-top: 1px solid var(--border);
+    }
+
+    details.course-details summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 4px;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+
+    details.course-details summary::-webkit-details-marker { display: none; }
+
+    details.course-details summary .course-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: color 0.2s ease;
+    }
+
+    details.course-details summary .course-chevron {
+      font-size: 0.7rem;
+      color: var(--purple-lite);
+      flex-shrink: 0;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    details.course-details[open] summary .course-name { color: var(--purple); }
+    details.course-details[open] summary .course-chevron {
+      transform: rotate(180deg);
+      color: var(--purple);
+    }
+
+    details.course-details summary:hover .course-name { color: var(--purple); }
+
+    .course-content {
+      padding: 0 4px 16px;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text-sec);
+    }
+
+    /* ── FOCUS ────────────────────────────────── */
+    :focus-visible {
+      outline: 2px solid var(--purple);
+      outline-offset: 4px;
+      border-radius: 3px;
+    }
+
+    /* ── MOBILE ──────────────────────────────── */
+    @media (max-width: 680px) {
+      .page-content { padding: 48px 20px 80px; }
+
+      .cv-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 48px;
+      }
+    }
+
+    /* ── REDUCED MOTION ──────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav-wrapper">
+    <nav class="nav-inner" aria-label="Primary navigation">
+      <a href="index.html" class="nav-monogram" aria-label="Ida Parelius — home">IP</a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="cv.html" class="active" aria-current="page">CV</a></li>
+        <li><a href="projects.html">Projects</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="page-content">
+
+      <!-- PAGE HEADER -->
+      <div class="cv-header">
+        <div class="cv-header-left">
+          <p class="page-label">Curriculum Vitae</p>
+          <h1 class="cv-title">CV</h1>
+          <p class="cv-subtitle">Ida Parelius — UX / UI Designer</p>
+        </div>
+        <a href="#education" class="btn-anchor">View education ↓</a>
+      </div>
+
+      <!-- WORK EXPERIENCE -->
+      <section class="experience-section" aria-label="Work experience">
+        <h2 class="section-heading">Work Experience</h2>
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <p class="timeline-company">Mediakonsult</p>
+            <p class="timeline-role">Webdesigner</p>
+            <p class="timeline-date">January 2024 – Present</p>
+            <p class="timeline-desc">I have been involved in building a small web agency called Mediakonsult, where I have worked with website design, structure, and usability for real clients. Being part of the company from an early stage has given me the opportunity to work on complete projects from start to finish, and has taught me a lot about how digital design works in real situations.</p>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">NTNU Gjøvik</p>
+            <p class="timeline-role">First consultant, scientific assistant &amp; workshop manager</p>
+            <p class="timeline-date">January 2022 – January 2023</p>
+            <p class="timeline-desc">At NTNU I had a variety of roles. I worked as a UX/UI designer, a design researcher, manager of a makerspace/workshop, and took on some administrative work. Not yet sure which direction in UX I would like to explore further, this job gave me great possibilities to explore UX/UI design and get to know myself better as a designer.</p>
+            <a href="images/Attest_NanReneeAugland.pdf" class="timeline-link" target="_blank" rel="noopener noreferrer">View attestation (Nan Renée Augland) →</a>
+            <a href="images/Attest_EmilBakke.pdf" class="timeline-link" target="_blank" rel="noopener noreferrer">View attestation (Emil Bakke) →</a>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">Salt &amp; Pepper Gjøvik</p>
+            <p class="timeline-role">Waiter</p>
+            <p class="timeline-date">March 2019 – December 2021</p>
+            <p class="timeline-desc">As a waiter, my main responsibility was to make sure that guests had what they needed and to give them the best possible experience every time they came in. I was also given responsibility for opening and closing the restaurant, as well as settlement. In addition, I was given the opportunity to take the bar licence and became a deputy on the bar licence.</p>
+            <a href="images/Attest_Salt&Pepper.pdf" class="timeline-link" target="_blank" rel="noopener noreferrer">View attestation →</a>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">NTNU Gjøvik</p>
+            <p class="timeline-role">Subject sponsor (fagfadder)</p>
+            <p class="timeline-date">2021</p>
+            <p class="timeline-desc">A subject sponsor at university helps students from day one — finding their way, getting to know the place of study, and helping with subjects, lecturers, or other questions. I helped both bachelor's and master's students with whatever they wondered about.</p>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">NTNU Gjøvik</p>
+            <p class="timeline-role">Student assistant</p>
+            <p class="timeline-date">2021</p>
+            <p class="timeline-desc">During my studies at NTNU I held around 10 different student assistant positions in different subjects. The main reason I took on these positions is because I strongly believe that you learn better by teaching. In these roles I learned a lot about learning and study techniques and how to teach effectively.</p>
+            <a href="images/Attest Mari Hermansen.pdf" class="timeline-link" target="_blank" rel="noopener noreferrer">View attestation →</a>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">NTNU Gjøvik</p>
+            <p class="timeline-role">Psychosocial health responsible</p>
+            <p class="timeline-date">2021</p>
+            <p class="timeline-desc">In this position it was my responsibility to make sure that all students thrived, found the right study and further path, as well as that they fit into classes, colloquium groups — and to help if there was anything students needed.</p>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">NTNU Gjøvik</p>
+            <p class="timeline-role">Institute representative at the Institute of Design</p>
+            <p class="timeline-date">August 2019 – December 2020</p>
+            <p class="timeline-desc">As a department representative, I participated in the student council's work and represented the students at meetings and committees at the department. The department representative keeps students informed about ongoing matters in the student council and ensures students are represented in the councils and committees that need representation.</p>
+            <a href="images/Attest ITV verv.pdf" class="timeline-link" target="_blank" rel="noopener noreferrer">View attestation →</a>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">Volunteer at Huset Gjøvik</p>
+            <p class="timeline-role">Security guard</p>
+            <p class="timeline-date">September 2018 – October 2019</p>
+            <p class="timeline-desc">At Huset I was a volunteer security guard, making sure no one got too drunk, removing those who failed to follow the rules, and generally ensuring guests had a good experience. Duties included standing at the door, watching for trespassing in the bar, walking around the premises, and setting up and taking down for events.</p>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">Don Pablos Pizza</p>
+            <p class="timeline-role">Cook, driver and waiter</p>
+            <p class="timeline-date">January 2015 – June 2018</p>
+            <p class="timeline-desc">I worked at Don Pablo's Pizza as a part-time employee for 3 weekends a month over three years — as a waiter, driver, and pizza baker. A job I loved for a long time, it helped me learn the importance of hard work and gave me room to figure out what I want to do next.</p>
+            <a href="images/Attest Don Pablos Pizza 13.29.24.pdf" class="timeline-link" target="_blank" rel="noopener noreferrer">View attestation →</a>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">Søstrene Grene</p>
+            <p class="timeline-role">Part-time employee</p>
+            <p class="timeline-date">August 2014 – February 2015</p>
+            <p class="timeline-desc">I worked as a shop assistant for six months. My tasks included cleaning, washing, serving customers, sorting the storage department, and manning the cash register.</p>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">Nordby IL Water Polo</p>
+            <p class="timeline-role">Swimming coach</p>
+            <p class="timeline-date">January 2013 – January 2015</p>
+            <p class="timeline-desc">I was swimming coach for the youngest participants at Nordby IL Water Polo, once a week when they needed extra staffing. A very pleasant job where I taught children between 5 and 10 to swim.</p>
+          </div>
+
+          <div class="timeline-item">
+            <p class="timeline-company">Tusenfryd</p>
+            <p class="timeline-role">Part-time employee — chef</p>
+            <p class="timeline-date">April 2011 – October 2013</p>
+            <p class="timeline-desc">I worked at Tusenfryd for three years as an employee in the inn kitchen. The focus of the job was on cooking and preparing food before serving.</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- EDUCATION -->
+      <section class="education-section" id="education" aria-label="Education">
+        <h2 class="section-heading">Education</h2>
+        <div class="edu-item">
+          <p class="edu-degree">Bachelor of Interaction Design</p>
+          <p class="edu-institution">NTNU Gjøvik</p>
+          <p class="edu-years">2020 – 2023</p>
+        </div>
+      </section>
+
+      <!-- COURSES -->
+      <section class="courses-section" id="courses" aria-label="Courses">
+        <h2 class="section-heading">Courses</h2>
+        <p class="courses-intro">All courses completed at NTNU Gjøvik as part of the Interaction Design bachelor's programme. Click a course to read the description.</p>
+
+        <div class="course-semester-group">
+          <p class="course-semester-label">First semester</p>
+
+          <details class="course-details">
+            <summary><span class="course-name">Ergonomics in digital media</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">The student should know principles and methods for designing interactive systems with a high degree of usability, including: methods for evaluating the usability of interactive systems; cognitive limitations and human factors in a usability context; universal design principles; scenario and personas-based methods; usability heuristics; and how to participate in different types of usability evaluation involving end users.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Color in interface design</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">The aim of this course is to provide an understanding of colour perception and its impact on the design of computer-based graphics. Students learn to apply principles of colour harmony and skills in colour selection to screen-based media including user interfaces. The course also covers problems faced by users with colour vision deficiencies and how to apply universal design principles.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Physical and tactile prototyping</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Analysis and design of interaction as a material — emergence, playability, physical, tangible and sensory qualities. Methods for basic design and experience of interaction in different media and environments. Prototyping with electronic components, basic programming (analogue and digital input/output), paper, textile, audio, and time dimension in interaction. Analysis of affordance and interaction in products, services and installations across games, arts, culture, health, physical exercise, and industry. Human-centred design methodology, observations, concept development and prototyping with clients.</div>
+          </details>
+        </div>
+
+        <div class="course-semester-group">
+          <p class="course-semester-label">Second semester</p>
+
+          <details class="course-details">
+            <summary><span class="course-name">Graphical tools, principles and methods</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">A basic introduction to the most central tools, principles and methods in graphic design for screens such as TVs, smartphones, tablets and PCs. The subject contains a number of practical exercises and a high degree of personal effort and responsibility for own learning is expected.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Web coding</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">An introduction to basic web design using HTML and CSS. The course presents the main building blocks of web development and discusses how to create a project from scratch following standards and good practices to make pages as readable as possible for both humans (Universal Design and Web Accessibility) and robots (Search Engine Optimization). Students learn to use HTML to structure content and CSS to define how content should look, including an overview of different CSS layout modules.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Typography</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">After completion, the student is in command of standard typographic terminology (Norwegian and English) and holds a basic theoretical and practical knowledge of punctuation, hyphenation and justification, detail typography, typefaces, basic principles of typographic design, page layout, and page makeup. The student can also create styles and global formats and paginate a document in InDesign.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Project management in interaction design</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Covers project models, concepts and types of projects, and traditional and agile project management in design. Topics include establishing and organizing teams, recruitment, management models, roles of project manager and participants, cooperation and motivation, project phases, planning and monitoring, time/activity/resource planning, and methods of control and monitoring.</div>
+          </details>
+        </div>
+
+        <div class="course-semester-group">
+          <p class="course-semester-label">Third semester</p>
+
+          <details class="course-details">
+            <summary><span class="course-name">Innovation and entrepreneurship</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Candidates plan and implement a development project, preferably for an external or internal client, possibly in collaboration with students from parallel programmes at NTNU. Development tasks can concern conceptual problem solving, product development in any type of media or channel, implementation of technical media solutions, innovative communication solutions, user-centred and social media, or innovative development of work processes. The project may be a further development of a previous project or designed to continue in a later one.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Service design</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Today our society is made up of services spanning both digital and physical surfaces. In this course, students learn service design as a methodology and receive training in key techniques within service design — including how to analyse, plan, streamline and organise service processes to contribute to good and innovative user experiences.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Mobile media and social interaction</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Students learn historical and current characteristics, limitations and possibilities of mobile and social media interactions, along with introductory knowledge about standards and technologies fundamental to modern smartphones and tablets. The course explores mobile media interaction challenges and how to design user interfaces for applicable media contexts, as well as how social media shapes and modifies interactions across interpersonal communication, corporate marketing, journalism and political campaigns.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Basic psychology</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">An introduction to psychology as a discipline and science — its problem domains, theories and research results. The course discusses findings from psychological theory and science in light of design challenges and choices, and submits some of the most important contributions psychology has given to understanding humans and the consequences for understanding thoughts and behaviour.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Design and prototyping for mobile and tablet</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">A practical design project where students work in small groups on concept development based on acquired knowledge of users in the target group. Through an iterative design process they develop a high-fidelity prototype. Students become acquainted with user-centred methods such as insight work, personas and scenario techniques, and become familiar with prototyping and design for mobile touch-based devices.</div>
+          </details>
+        </div>
+
+        <div class="course-semester-group">
+          <p class="course-semester-label">Fourth semester</p>
+
+          <details class="course-details">
+            <summary><span class="course-name">Information architecture</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Through this and other practical design project courses, the student has slowly developed as an explorer, concept developer and designer — establishing an increasingly wide repertoire of solution types and common graphic techniques. The student can handle a number of typical genres within paper- and screen-mediated communication and interaction, and has the technical skills for the development and implementation of design solutions for paper and screen.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Media and design law</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">An introduction to the most central legal rules within copyright and other rights, covering both analogue and digital use of works — loan rules, rights to enter into agreements and licensing, rules for performing artists, producers, catalogue rules, privacy rules under the Copyright Act, and design rules including how designs are acquired and procedural rules relating to the Norwegian Patent Office.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Project development in creative business</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">An in-depth specialisation course involving conceptual problem solving, product development, media production, innovative communication solutions, or innovative development of work processes in the media. The student clarifies the topic and problem with a supervisor, and may work in collaboration with others. This course is intended as preparation for the bachelor's thesis and requires use of scientific working methods and effective oral presentation of the project solution.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Design of safety-critical systems</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Students learn to understand how to create safety-critical designs with a particular focus on safety. Topics include theories of cognitive ergonomics, situational awareness, principles of screen design, history of industrial human-machine interface, understanding human error and human perception, displaying and controlling alarms, and situational awareness — explored through examples from ship control rooms, core control rooms, air traffic control, and safety-critical systems in healthcare.</div>
+          </details>
+        </div>
+
+        <div class="course-semester-group">
+          <p class="course-semester-label">Fifth semester</p>
+
+          <details class="course-details">
+            <summary><span class="course-name">Exphil</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">An introduction to issues within theory of knowledge and science, ethics, political philosophy, and aesthetics. Different views of nature, humanity, and technology are discussed, along with questions concerning the relation between individual and society. The course provides knowledge of perspectives on science and contributes to a reflective relation to scientific practice, with special focus on the humanities and aesthetic disciplines. Dialogue- and discussion-based teaching cultivates critical thinking and skills in argumentation and cooperation.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Bachelor's Thesis</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">The bachelor's thesis concludes the study programme and integrates important parts of its academic content. After completing it, the student has acquired new knowledge within a self-selected part of their subject area, understanding of methodical work, capacity for reflection and systematic assessment, and competence to plan and carry out an independent task — formulating problems and analysing them based on both theoretical and empirical material.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Supervised practicum in Media and Informatics</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">The student collaborates with and is deployed in a workplace for a total of 180 hours during a semester. Students participate in production, familiarise themselves with the company's organisation, and make versatile use of theoretical knowledge and practical skills acquired during the first four semesters. Practice challenges students to apply their knowledge and skills in a real context — including acquiring new knowledge and skills as needed — and to understand the company's culture, ways of working, and organisation.</div>
+          </details>
+        </div>
+
+        <div class="course-semester-group">
+          <p class="course-semester-label">Sixth semester</p>
+
+          <details class="course-details">
+            <summary><span class="course-name">Business design</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Business design focuses on how to use the designer's way of thinking and the methodical and creative design process to understand, challenge and design user and customer-driven innovation in companies' business models. The course provides an introduction to business design through practical work with a real business case, applying user- and customer-centred design approaches and tools for business modeling and service development, as well as an understanding of drivers for business development.</div>
+          </details>
+        </div>
+
+        <div class="course-semester-group">
+          <p class="course-semester-label">Computer engineering</p>
+
+          <details class="course-details">
+            <summary><span class="course-name">Introduction to engineering</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Covers the history of technology, technology development, the engineer's role in society, relevant legal provisions relating to computer technology and software development, and various consequences of using information technology.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Preparatory course in mathematics</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Developing an academic foundation and understanding in mathematics that other subjects can build on, with a relevant mathematical symbol and formula apparatus. Skills include calculating with numbers, symbols and formulas, and developing good arithmetic skills.</div>
+          </details>
+
+          <details class="course-details">
+            <summary><span class="course-name">Fundamental programming</span><span class="course-chevron">▾</span></summary>
+            <div class="course-content">Developing an academic foundation and understanding in programming that other subjects can build on, with relevant programming concepts and a practical skill set. Skills include writing, reading and understanding code, and building structured programs.</div>
+          </details>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+</body>
+</html>

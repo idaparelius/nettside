@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Ida Parelius</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── DESIGN TOKENS ──────────────────────── */
+    :root {
+      --bg:          #F8F7FF;
+      --surface:     #FFFFFF;
+      --text:        #1A1420;
+      --text-sec:    rgba(26,20,32,0.6);
+      --purple:      #4E3388;
+      --purple-mid:  #7055B8;
+      --purple-lite: #C4B0F0;
+      --border:      rgba(78,51,136,0.12);
+      --font:        'Space Grotesk', sans-serif;
+      --mono:        'Space Mono', monospace;
+      --r:           10px;
+      --ease:        ease-in-out 0.3s;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      opacity: 0;
+      animation: pageIn 0.6s ease-in-out 0.05s forwards;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── NAV ─────────────────────────────────── */
+    .nav-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(248,247,255,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-monogram {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--purple);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color var(--ease);
+    }
+    .nav-monogram:hover { color: var(--purple-mid); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      text-decoration: none;
+      padding: 4px 0;
+      position: relative;
+      transition: color var(--ease);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--purple);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-links a.active {
+      color: var(--purple);
+      font-weight: 700;
+    }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ── PAGE CONTENT ────────────────────────── */
+    .page-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 72px 32px 100px;
+    }
+
+    /* ── PAGE HEADER ─────────────────────────── */
+    .page-header {
+      margin-bottom: 72px;
+    }
+
+    .page-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--purple-mid);
+      margin-bottom: 12px;
+    }
+
+    .page-title {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .page-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-sec);
+    }
+
+    /* ── SECTION ─────────────────────────────── */
+    .project-section {
+      margin-bottom: 72px;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── CARD GRID ───────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    /* ── CARD ────────────────────────────────── */
+    .proj-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .proj-card:hover {
+      border-color: rgba(78,51,136,0.4);
+      box-shadow: 0 4px 20px rgba(78,51,136,0.08);
+      transform: translateY(-2px);
+    }
+
+    .proj-card:focus-visible {
+      outline: 2px solid var(--purple);
+      outline-offset: 2px;
+    }
+
+    .card-thumb {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(145deg, rgba(78,51,136,0.08) 0%, rgba(196,176,240,0.18) 100%);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .card-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .card-body {
+      padding: 18px 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 0.86rem;
+      line-height: 1.65;
+      color: var(--text-sec);
+      flex: 1;
+    }
+
+    .card-cta {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple-mid);
+      margin-top: 6px;
+      transition: color 0.2s ease;
+    }
+
+    .proj-card:hover .card-cta { color: var(--purple); }
+
+    /* ── OVERLAY ─────────────────────────────── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      overflow: hidden;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,6,20,0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      cursor: pointer;
+      z-index: 0;
+    }
+
+    .overlay-panel {
+      position: relative;
+      z-index: 1;
+      background: #16102A;
+      border: 1px solid rgba(196,176,240,0.15);
+      border-radius: 14px;
+      max-width: 780px;
+      width: 100%;
+      max-height: calc(100vh - 64px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 48px;
+      color: rgba(244,240,249,0.95);
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .overlay.open .overlay-panel {
+      transform: translateY(0) scale(1);
+    }
+
+    .overlay-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(244,240,249,0.2);
+      border-radius: 50%;
+      background: transparent;
+      color: rgba(244,240,249,0.6);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .overlay-close:hover {
+      color: rgba(244,240,249,1);
+      border-color: rgba(244,240,249,0.45);
+    }
+
+    .overlay-close:focus-visible {
+      outline: 2px solid var(--purple-lite);
+      outline-offset: 3px;
+    }
+
+    .overlay-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--purple-lite);
+      margin-bottom: 10px;
+    }
+
+    .overlay-title {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: rgba(244,240,249,0.97);
+      margin-bottom: 20px;
+    }
+
+    .overlay-desc {
+      font-size: 0.96rem;
+      line-height: 1.75;
+      color: rgba(244,240,249,0.75);
+      margin-bottom: 28px;
+    }
+
+    .overlay-desc p + p {
+      margin-top: 14px;
+    }
+
+    /* Image gallery (horizontal scroll, for simple projects) */
+    .overlay-images {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(196,176,240,0.3) transparent;
+    }
+
+    .overlay-images::-webkit-scrollbar { height: 4px; }
+    .overlay-images::-webkit-scrollbar-thumb { background: rgba(196,176,240,0.3); border-radius: 2px; }
+
+    .overlay-images img {
+      height: 200px;
+      width: auto;
+      max-width: 340px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(196,176,240,0.12);
+      flex-shrink: 0;
+    }
+
+    /* Inline content (sections format) */
+    .overlay-section-text {
+      font-size: 0.96rem;
+      line-height: 1.75;
+      color: rgba(244,240,249,0.75);
+      margin-bottom: 20px;
+    }
+
+    .overlay-section-text p + p { margin-top: 14px; }
+
+    .overlay-section-img {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .overlay-section-img img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid rgba(196,176,240,0.12);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .overlay-section-img--logo {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 28px 40px;
+      display: inline-block;
+    }
+
+    .overlay-section-img--logo img {
+      border: none;
+      background: transparent;
+      max-width: 260px;
+    }
+
+    .overlay-section-img-row {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .overlay-section-img-row img {
+      flex: 1;
+      min-width: 140px;
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid rgba(196,176,240,0.12);
+      background: rgba(255,255,255,0.04);
+      object-fit: contain;
+    }
+
+    .overlay-section-heading {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: rgba(244,240,249,0.92);
+      letter-spacing: -0.01em;
+      margin: 32px 0 6px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(196,176,240,0.15);
+    }
+
+    .overlay-section-text a {
+      color: rgba(196,176,240,0.9);
+      text-underline-offset: 3px;
+    }
+    .overlay-section-text a:hover { color: rgba(244,240,249,0.95); }
+
+    .overlay-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 8px;
+      background: var(--purple);
+      color: #ffffff;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.25s ease, transform 0.2s ease;
+    }
+
+    .overlay-link:hover {
+      background: var(--purple-mid);
+      transform: translateY(-1px);
+    }
+
+    .overlay-link:focus-visible {
+      outline: 2px solid var(--purple-lite);
+      outline-offset: 3px;
+    }
+
+    /* ── FOCUS ────────────────────────────────── */
+    :focus-visible {
+      outline: 2px solid var(--purple);
+      outline-offset: 4px;
+      border-radius: 3px;
+    }
+
+    /* ── TABLET ──────────────────────────────── */
+    @media (max-width: 860px) {
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ── MOBILE ──────────────────────────────── */
+    @media (max-width: 560px) {
+      .page-content { padding: 48px 16px 80px; }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .overlay { padding: 16px; }
+      .overlay-panel { max-height: calc(100vh - 32px); padding: 28px 24px; }
+
+      .overlay-images img {
+        height: 140px;
+      }
+    }
+
+    /* ── REDUCED MOTION ──────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav-wrapper">
+    <nav class="nav-inner" aria-label="Primary navigation">
+      <a href="index.html" class="nav-monogram" aria-label="Ida Parelius — home">IP</a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="cv.html">CV</a></li>
+        <li><a href="projects.html" class="active" aria-current="page">Projects</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="page-content">
+
+      <!-- PAGE HEADER -->
+      <header class="page-header">
+        <p class="page-label">Portfolio</p>
+        <h1 class="page-title">Projects</h1>
+        <p class="page-subtitle">A showcase of selected projects and design work</p>
+      </header>
+
+      <!-- SECTION 1: FOUNDER -->
+      <section class="project-section" aria-label="Founder projects">
+        <p class="section-label">Founder</p>
+        <div class="card-grid">
+
+          <!-- Mediakonsult -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="Mediakonsult"
+            data-label="Founder"
+            data-desc="I have been involved in building a small web agency called Mediakonsult, where I have worked with website design, structure, and usability for real clients. Being part of the company from an early stage has given me the opportunity to work on complete projects from start to finish, and has taught me a lot about how UX/UI design works in real situations.
+
+In Mediakonsult I mainly work with planning, design, and building websites using WordPress and Elementor. My role often includes structuring content, improving usability, setting up the technical solution, and making sure the final result works well for both the client and the users. I have also been responsible for customer communication, support, and maintaining existing websites, which has given me valuable experience in understanding real needs and constraints.
+
+Working with real clients has been very different from working on school projects. It has taught me how to adapt designs to actual requirements, solve unexpected problems, prioritize time, and explain technical and design decisions to people without a background in UX or development. Through this work I have become more confident, more practical, and more focused on creating solutions that are clear, usable, and reliable.
+
+Some of the projects I have worked on through Mediakonsult include Safetyguide, Lillebru, and Cryno.
+
+For Safetyguide, I redesigned and rebuilt an existing website, improving the visual design, the structure, and the content to create a more modern and user-friendly interface.
+
+For Lillebru, the visual profile was already defined, but the website needed to be properly structured and set up. My role was to rebuild the site in a more robust way and make sure it was easy to navigate, easy to maintain, and consistent with the design guidelines.
+
+For Cryno, the company needed a completely new website after moving away from their previous solution. The goal was to keep parts of the existing identity while building a new, more modern and flexible website from scratch.
+
+Working on these projects has given me valuable experience in designing for real users, working closely with clients, and creating digital solutions that are not only visually good, but also functional and easy to use."
+            data-images='[]'
+            data-link="https://mediakonsult.no/">
+            <div class="card-thumb">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="14" width="48" height="32" rx="4" stroke="#4E3388" stroke-width="1.5" fill="rgba(78,51,136,0.08)"/>
+                <path d="M20 30 L28 22 L36 30 L44 22" stroke="#7055B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="24" y1="46" x2="40" y2="46" stroke="#4E3388" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="32" y1="46" x2="32" y2="50" stroke="#4E3388" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="card-body">
+              <p class="card-title">Mediakonsult</p>
+              <p class="card-desc">Web agency work — website design, structure, and usability for real clients using WordPress and Elementor.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION 2: VITENSKAPELIG ASSISTENT -->
+      <section class="project-section" aria-label="Research Assistant projects">
+        <p class="section-label">Research Assistant</p>
+        <div class="card-grid">
+
+          <!-- BeNet -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="BeNet"
+            data-label="Research Assistant"
+            data-sections-id="benet"
+            data-link="https://be-net.no">
+            <div class="card-thumb">
+              <img src="images/Ikoner/BeNet.png" alt="BeNet icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">BeNet</p>
+              <p class="card-desc">A business network platform connecting students and companies for internships.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+          <!-- rurAllure -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="rurAllure"
+            data-label="Research Assistant"
+            data-sections-id="rurallure"
+            data-link="https://rurallure.eu">
+            <div class="card-thumb">
+              <img src="images/Ikoner/RurAllure.png" alt="rurAllure icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">rurAllure</p>
+              <p class="card-desc">UX research and app design for sustainable pilgrimage tourism in rural Europe.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+          <!-- Figma Lecture (repeat) -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="Figma Lecture"
+            data-label="Research Assistant"
+            data-desc="During my bachelor's I did a lot to learn Figma and how to use it most efficiently. I still have a lot to learn, but I know enough to teach other the basics. I was asked to have a guest lecture to teach web coding students how to use Figma, and I made my own version of the Figma Ninja challenge.
+
+The lecture I had was very successful and the Figma file has been shared with everyone at the institute. After the first lecture I have had three more of these lectures for both interaction design and web coding students. I learn more for every time I teach someone, and after every lecture I get ideas of what more I should add or change something that wasn't explained as well as it could have been. This is always under development and being improved."
+            data-images='["images/FIGMA/Screenshot 2022-12-26 at 21.26.09.png"]'
+            data-link="https://www.figma.com/design/aHPOrtJZEZTcWAo219pfRh/Figma-workshop?node-id=7-41&p=f&t=D7V3lhPgtPPgul0Q-0">
+            <div class="card-thumb">
+              <img src="images/Ikoner/Figma Lecture.png" alt="Figma Lecture icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">Figma Lecture</p>
+              <p class="card-desc">Developed and delivered Figma guest lectures to design and web coding students at NTNU.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+          <!-- Digicon 2022 -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="Digicon 2022"
+            data-label="Research Assistant"
+            data-sections-id="digicon"
+            data-link="https://www.youtube.com/watch?v=sIzN5xsWceE">
+            <div class="card-thumb">
+              <img src="images/Ikoner/DigiCon.png" alt="Digicon icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">Digicon 2022</p>
+              <p class="card-desc">Presented workshop and makerspace research at the Digicon 2022 conference.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION 3: BACHELOR -->
+      <section class="project-section" aria-label="Bachelor projects">
+        <p class="section-label">Bachelor</p>
+        <div class="card-grid">
+
+          <!-- Walter & Vera -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="Walter &amp; Vera"
+            data-label="Bachelor"
+            data-sections-id="walter-vera"
+            data-link="https://www.figma.com/proto/8KBUbM4PRB2YgQhQsiJFxQ/Bach?page-id=270%3A4185&node-id=403-21153&viewport=408%2C606%2C0.03&scaling=scale-down&starting-point-node-id=403%3A21153">
+            <div class="card-thumb">
+              <img src="images/Ikoner/Walter & Vera.png" alt="Walter & Vera icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">Walter &amp; Vera</p>
+              <p class="card-desc">Interactive news app for children aged 7–12, developed with local newspaper OA.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+          <!-- REKO-Ringen -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="REKO-Ringen"
+            data-label="Bachelor"
+            data-sections-id="reko-ringen"
+            data-link="https://www.figma.com/proto/QXMvxtEaxKDIW6QlavB7vd/IA-Gruppe-8?page-id=0%3A1&node-id=4%3A334&viewport=-40%2C1024%2C0.14&scaling=scale-down&starting-point-node-id=4%3A334&show-proto-sidebar=1">
+            <div class="card-thumb">
+              <img src="images/Ikoner/Reko ringen.png" alt="REKO-Ringen icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">REKO-Ringen</p>
+              <p class="card-desc">Information architecture and UX redesign for a local food distribution network.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+          <!-- ABBP Booking -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="ABBP Booking"
+            data-label="Bachelor"
+            data-sections-id="abbp-booking"
+            data-link="">
+            <div class="card-thumb">
+              <img src="images/Ikoner/ABBP.png" alt="ABBP icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">ABBP Booking</p>
+              <p class="card-desc">Booking platform for artists, bands, companies and private individuals — prototyped in Adobe XD.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECTION 4: KONSULENT -->
+      <section class="project-section" aria-label="Consultant projects">
+        <p class="section-label">Consultant</p>
+        <div class="card-grid">
+
+          <!-- Made 4for Me -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="Made 4for Me"
+            data-label="Consultant"
+            data-sections-id="made-4for-me"
+            data-link="https://www.figma.com/proto/NuzwEXLk8YnLHqhjcV0c5G/Looks?page-id=2001%3A3702&node-id=2001-3754&viewport=-1687%2C769%2C0.74&scaling=min-zoom&starting-point-node-id=2001%3A3754&show-proto-sidebar=1">
+            <div class="card-thumb">
+              <img src="images/Ikoner/Made 4ME.png" alt="Made 4for Me icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">Made 4for Me</p>
+              <p class="card-desc">Social shopping app redesign for a start-up targeting 15–25 year olds.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+          <!-- Tiny Workers -->
+          <div class="proj-card" role="button" tabindex="0"
+            data-title="Tiny Workers"
+            data-label="Consultant"
+            data-desc="Coming soon — the full case study for this project will be added shortly."
+            data-images='[]'
+            data-link="">
+            <div class="card-thumb">
+              <img src="images/Ikoner/Tiny Workers.png" alt="Tiny Workers icon" loading="lazy">
+            </div>
+            <div class="card-body">
+              <p class="card-title">Tiny Workers</p>
+              <p class="card-desc">Brand identity and digital design for a small business.</p>
+              <p class="card-cta">View project →</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- MADE 4FOR ME SECTIONS DATA -->
+  <script type="application/json" id="sections-made-4for-me">
+  [
+    {"type":"text","content":"Made 4for Me — short 4ME — is an app that revolutionizes social shopping. The biggest social apps (Instagram, TikTok, YouTube, Snapchat, Facebook) have all tried to add a shopping aspect, either through ads or posts. But the user is always forwarded to another page — the shopping never happens within the app. 4ME changes this: both the social and the shopping happen in one place.\n\nThis is a consultant project where I worked for a start-up that had an existing design proposal but wanted a redesign — creating an app for today's 15–25 year olds that lets them scroll while keeping up with the latest trends. The project is still under development, and the design was in its final stages before handoff to front-end and back-end developers."},
+
+    {"type":"heading","text":"The Brief"},
+    {"type":"text","content":"This project challenged me in many ways. I am used to working in groups, but this was a project where I mostly worked alone. I was lucky to know the owners personally and could ask them for different perspectives when I got stuck on an idea. I also created the logo — something I had never done during my studies. There was supposed to be a graphic designer to refine what I created, but plans don't always go as expected, so the final version is my design.\n\nThe logo design and the app evolved together: whenever there was a significant change in the app or the colors, there was also an updated version of the logo.\n\nAt the beginning of the project I had a meeting with the start-up to talk about what they liked and what they wanted to improve in their existing design. We discussed functions, the target user, and their expectations for the final delivery."},
+
+    {"type":"heading","text":"Sketches"},
+    {"type":"text","content":"After an initial meeting full of impressions, ideas, and thoughts, I started from the very beginning with sketches. This helped me sort through what needed to be prototyped and where functions could be placed. As a designer, you don't need to be an artist — you just need the ability to express your thoughts clearly. And if you can't draw it, you can always add some text.\n\nAfter working through the sketches, I went back to my main contact, Kristine, to align on direction before moving into digital prototyping."},
+    {"type":"image","src":"images/MadeForMe/Sketch.png"},
+
+    {"type":"heading","text":"Logo Development"},
+    {"type":"text","content":"Kristine and I worked on the logo in parallel with the prototype, testing different ways to construct a mark and create a smaller version of it. We showed early proposals to the rest of the group and held a logo workshop. The results turned into the first \"proper\" logo proposal, along with a new color palette for the app.\n\nDuring the user testing phase the colors were changed again — the original palette was perceived as too feminine, so we replaced the peach tone with blue to make it more gender neutral."},
+    {"type":"images","srcs":["images/MadeForMe/Logo 1.png","images/MadeForMe/Logo 2.png","images/MadeForMe/Logo 3.png"]},
+    {"type":"images","srcs":["images/MadeForMe/Logo 4.png","images/MadeForMe/Logo 5.png","images/MadeForMe/Logo 6.png"]},
+    {"type":"images","srcs":["images/MadeForMe/Logo 7.png","images/MadeForMe/Logo 8.png"]},
+
+    {"type":"heading","text":"First Prototype"},
+    {"type":"text","content":"I made one mistake early in the process: since I had an existing design to redesign, I thought I could jump straight to a mid-fi prototype, skipping low-fi. I should have followed the normal pattern — low → mid → hi — and my process will show why.\n\nThe first version had some problems with contrast, text size, and WCAG/UU compliance. But as a first version, the focus was on getting all the requested features in place, finding logical placements, and figuring out the easiest navigation paths. Those refinements would come later. You can test this first prototype by <a href=\"https://www.figma.com/proto/NuzwEXLk8YnLHqhjcV0c5G/Looks?page-id=1621%3A515&node-id=1622-1218&viewport=222%2C501%2C0.1&scaling=scale-down&starting-point-node-id=1622%3A1218&show-proto-sidebar=1\" target=\"_blank\" rel=\"noopener noreferrer\">clicking here</a>."},
+    {"type":"images","srcs":["images/MadeForMe/Versjon 1.2.png","images/MadeForMe/Versjon 1.3.png"]},
+    {"type":"image","src":"images/MadeForMe/Shopping v.1.2.png"},
+
+    {"type":"heading","text":"User Testing"},
+    {"type":"text","content":"I tested with colleagues and people within the 15–25 age group — running it by colleagues first, since many of them had taught me during my bachelor's and I knew they would give great tips and honest feedback.\n\nSummary from 6 user tests:<br>• Make things bigger<br>• Scroll to close or go back<br>• Tap on the video to get more information<br>• I don't really understand what the icons are or where they take me<br>• Make more of a hierarchy<br>• I want to go back when I'm taking the tour<br>• There is way too much text in the tour — I would never read all this<br>• Do I really need all these icons?<br>• Can it be a bit more colorful?<br>• I feel like I can't hit the button I want (make it bigger)<br>• Biometry: am I making me or an avatar?<br>• Can I make folders in my saved videos?<br>• What is that Google icon in shopping?"},
+
+    {"type":"heading","text":"Version 2"},
+    {"type":"text","content":"By the time user testing was complete, the start-up had once again changed their mind on the color palette. I met with Kristine one more time to finalize the logo with the new colors. With the updated colors and the user testing feedback in hand, I started on version 2 of the prototype."},
+    {"type":"images","srcs":["images/MadeForMe/Versjon 2.1.png","images/MadeForMe/Versjon 2.2.png"]},
+    {"type":"images","srcs":["images/MadeForMe/Versjon 3.1.png","images/MadeForMe/Versjon 3.2.png"]},
+    {"type":"image","src":"images/MadeForMe/Versjon 3.3.png"},
+
+    {"type":"text","content":"If you are interested in following my process further, <a href=\"https://www.figma.com/proto/NuzwEXLk8YnLHqhjcV0c5G/Looks?page-id=2001%3A3702&node-id=2001-3754&viewport=-1687%2C769%2C0.74&scaling=min-zoom&starting-point-node-id=2001%3A3754&show-proto-sidebar=1\" target=\"_blank\" rel=\"noopener noreferrer\">click here for the final prototype</a>.\n\nOr check out Made 4For Me on <a href=\"https://www.instagram.com/madeformeapp/\" target=\"_blank\" rel=\"noopener noreferrer\">Instagram</a>."}
+  ]
+  </script>
+
+  <!-- REKO-RINGEN SECTIONS DATA -->
+  <script type="application/json" id="sections-reko-ringen">
+  [
+    {"type":"text","content":"In a course called Information Architecture we were taught how to use user-centred methods such as personas, scenarios, and various forms of iterative prototyping to develop and present information architectures for websites on desktop and mobile. Throughout the course we slowly developed as explorers, concept developers, and designers.\n\nThe main task of the course was to create a platform for \"REKO ringen\" — where farmers can post what produce they will sell at upcoming gatherings. Currently they only work through Facebook, where orders are made in the comment section. The purpose of \"REKO ringen Gjøvik\" is to act as a contact platform between consumers and local producers in the area, without intermediaries.\n\nThe goal was to develop a solution that complements today's positive aspects, solves challenges that come with running a solution on a social platform, improves the everyday lives of both consumers and producers, and keeps the focus on fair consumption and sales without intermediaries."},
+    {"type":"text","content":"The group's problem statement:\n\nHow can the REKO ring be optimised, and the personal contact be preserved when using another platform?"},
+    {"type":"image","src":"images/REKO/Logo.svg","variant":"logo"},
+
+    {"type":"heading","text":"The Process"},
+    {"type":"text","content":"This project took place throughout the autumn 2020 semester at NTNU Gjøvik, with \"REKO ringen\" as collaboration partner. The process can be divided into four parts: explore, design, test, and implement.\n\nExploring meant finding weaknesses and strengths in the current solution — what users like and don't like, what they need and want, and how a possible solution can solve the negative aspects and improve the positive ones. The design part is about implementing those solutions through iterative lo-fi and hi-fi prototyping, which goes through a test phase to find errors or deficiencies."},
+
+    {"type":"heading","text":"Research and insights"},
+    {"type":"text","content":"At the beginning of the project, each project group met either a consumer or producer to interview — a total of 14 interviews were conducted, 7 with consumers and 7 with producers. This ensured that all groups had an equal starting point and that the insight phase could be completed efficiently.\n\nAfter gathering insights, the team used several methods to organise key information into manageable quantities — grouping pain points, positive experiences, suggestions for the future, and what we called \"nuggets of gold\": quotes from user interviews used in personas to make them more personal.\n\nThe project group created five scenarios to cover all pain points found, ensuring that a future solution would be helpful and not create new pain points."},
+
+    {"type":"heading","text":"Scenarios"},
+    {"type":"text","content":"Scenario for Maren\nMaren has just put the children to bed and is scrolling through the REKO ring on her mobile. She hasn't made a specific shopping list but wants to see if she comes across anything interesting. A new producer tempts her with beetroot, and she orders a bag — along with carrots, potatoes, and cauliflower from other producers.\n\nPick-up scenario, Maren\nMaren arrives at the garage at CC and parks her bike. It is 7pm and she wants to be quick. She efficiently collects the bags she has prepaid, but struggles to find the last producer. After some searching, she finds them and pays with her card.\n\nScenario for Birgitte\nBirgitte has invited the children home for dinner and notices the stock from last time at REKO-Ringen is getting low. She sits down with her laptop and finds some good items to order. She makes a list and sends her husband to pick them up — she is happy to walk around and enjoy the feeling of a market.\n\nScenario for Arne\nArne wakes up early on delivery day and begins with animal care. After all animals have been fed and eggs collected, he goes through orders, packs the goods into labelled cartons and bags, loads the car, and drives to Gjøvik for delivery.\n\nScenario for Lars\nLars has a new item to add to his product range. He enters the REKO app, accesses the overview of his store, and uses a function to add the new item to the assortment."},
+
+    {"type":"heading","text":"Information architecture"},
+    {"type":"text","content":"The project group went into detail to organise the content and created a structural overview in the form of a sitemap, with several iterations carried out within the group and with a supervisor.\n\nThe group chose to create two sitemaps — one for the consumer and one for the producer — since manufacturers need additional functions after logging in, such as posting products and having an overview of orders. No one needs to log in to browse or add items to the basket, but must log in to confirm and pay. This allows manufacturers to more easily track orders and approve deliveries on the day."},
+    {"type":"images","srcs":["images/REKO/Picture 1.png","images/REKO/Picture 2.png"]},
+
+    {"type":"heading","text":"Design decisions"},
+    {"type":"text","content":"Based on insights gathered from consumers, the most important thing was to retain the feeling of an old-fashioned market and personal contact in a new solution. The project group therefore made deliberate choices in colour and typography to tie the solution together and carry the stamp of an old-fashioned market.\n\nThe main colour green was chosen to communicate renewal, nature, freshness, growth, harmony, and environment — meanings that fit well with the REKO concept and the products sold there. The dominant colour is white, chosen to bring out a clean and clear expression and to avoid using background colours without purpose. Black is used for text to maintain contrast, with light grey for secondary elements such as \"read more\" buttons.\n\nThe project group initially wanted 60% white, 30% green, and 10% red — but after guidance we realised green could serve both primary and secondary buttons, eliminating the need for red entirely."},
+    {"type":"image","src":"images/REKO/Picture 3.png"},
+    {"type":"text","content":"Where images are used in the solution, it is only to promote products and make it easier for users to choose. Pictograms are used sparingly — the need did not turn out to be that great.\n\nIn the mobile solution, a bottom navigation menu lets users navigate to home, search, shopping basket, or profile. On desktop, global navigation sits at the top with the same functions plus an overview of manufacturers. Search has been made easily accessible and visible throughout — because it is a favourite tool with users."},
+
+    {"type":"heading","text":"Prototyping"},
+    {"type":"text","content":"Once all the above stages were done, it was time to start prototyping. This was first done on Miro, where the group iterated together on how the solutions could look and what would be most practical for users. The group then built both a mobile and web solution, keeping in mind that the solution should retain the feeling of an old-fashioned market and maintain the personal contact that many feel they achieve via the REKO ring."},
+    {"type":"images","srcs":["images/REKO/Picture 4.png","images/REKO/Picture 5.png"]},
+
+    {"type":"heading","text":"Reflection"},
+    {"type":"text","content":"One weakness we want to highlight is the interview guide. Since each group had their own interview subject with their own guide, no two interviewees answered the exact same questions — meaning specific insights come from only one point of view. If all groups had asked a \"dream question\" about ideal solutions, they could have collected and compared different wishes.\n\nThe group's problem — how can the REKO ring be optimised and personal contact preserved — was kept in mind throughout the project. Using design and app functions, we retained some of the personal contact users previously achieved via Facebook. Nevertheless, some of the old-fashioned market feeling is difficult to retain in a digitised solution.\n\nWe would clarify that the solutions developed are only a recommendation. If incorporated into the REKO ring, it is recommended that the project group return to check how the application works soon after launch, and again a couple of months later, to see whether there are more, fewer, or different functions needed."}
+  ]
+  </script>
+
+  <!-- ABBP BOOKING SECTIONS DATA -->
+  <script type="application/json" id="sections-abbp-booking">
+  [
+    {"type":"text","content":"In the subject Graphic Tools, Principles and Methods, I had the assignment of prototyping an optional type of booking page. This was the first course where we designed a solution and were introduced to Adobe XD and heard about Figma. Thus ABBP-booking came to life — ABBP stands for Artist, Band, Company, and Private person. In Norwegian the letters come out to ABBP.\n\nIn the completed prototype there are two products: an application and a website. In the solution, artists, bands, companies, and private individuals can go in to find a venue or artists/bands for an upcoming event. The products are intended to bring everyone together on one platform, so that it is easier to get in touch with each other and get an overview of upcoming orders or bookings."},
+
+    {"type":"heading","text":"The Application"},
+    {"type":"text","content":"The application is based on an artist logging in, finding requests, and either accepting or rejecting the request. I have made the notifications clear on the home page of the application, so that you can easily access and view all messages. During the process, I had to remember who was in focus when I designed — private person, artist, or company. All three need their own twist on the application as they are looking for different elements and objects. Here, an attempt has been made at something called \"persuasive design\", which is about getting the user to take certain actions. A concept from this is that warm colors catch the eye of the user and make them act.\n\nThe application started with simple wireframes on paper and ended up as a middle ground between low-fi and hi-fi digital clickable prototype. WCAG and UU principles have been considered to a certain extent, but not too many compromises have been made. If you make too many compromises with WCAG and UU, all websites will end up almost the same, and you will lack a sense of personality on the page."},
+
+    {"type":"heading","text":"The Online Solution"},
+    {"type":"text","content":"In the online solution, the goal was for a private person to register, find an artist, and send said artist a request. In this scenario, it has been decided that the user has plenty of time to search, read, and make a choice. This means there does not need to be a lot of text on the start page. Instead of using a border on all boxes, I have chosen to use a shadow effect that makes the page stand out a little more. It is modern with a flat design but I have chosen to move away from this a bit — it is then a personal preference on what I thought for the design to look more alive."},
+
+    {"type":"heading","text":"Design Process"},
+    {"type":"text","content":"The whole sketching process started with a brainstorming session together with the whole group, where we came up with absolutely every detail a website for booking should or can contain. Then I started with simple wireframes to get an idea of how the layout of the application should be to bring out the information I want to share with the users, and a sketch of the first draft.\n\nAfter the first group meeting and guidance, the draft became more fleshed out, and the other members of the group and I agreed to work separately from here on. For the second tutorial, the sketches had gone from simple sketches to a slightly more fixed plan and a low-fi digital prototype. For the third tutorial, the mobile prototype was finished, and the sketching process continued for a web-based solution.\n\nFor the website, there were slightly fewer sketches on paper as I took a lot of inspiration from the application solution. This was not the best idea, as I was not able to think new things at first. I went back and thought a little more with pen and paper, and considered which changes would lift the page — both in terms of layout, composition principles, the gestalt principles, and the target audience."},
+
+    {"type":"image","src":"images/ABBP/Screenshot 2022-12-26 at 21.01.35.png"},
+
+    {"type":"heading","text":"Target Group & Layout"},
+    {"type":"text","content":"My target group is incorporated in the name of the project — ABBP — who are all able to benefit from this solution. A layout is about communicating the right message to the user and organizing information in a logical way. But a layout on a page is not enough to get a user-friendly page; composition principles and gestalt principles help to build up the structure and the overall visual expression.\n\nThe principles of composition are based on air, contrast, placement, grids, balance, movement, unity, and much more. The Gestalt principles are based on similarity, proximity, contrast, movement, proportion, rhythm, and harmony/dynamics — about how we organize what we see.\n\nA well-balanced layout creates harmony. Grids and contrast also create a visual hierarchy, meaning that the more important elements catch the eye before the less important elements are discovered. Air and placement go hand in glove; the air around elements makes the layout look clean and tidy, together with placement in the golden ratio ensuring harmony."},
+
+    {"type":"heading","text":"Colors & Typography"},
+    {"type":"text","content":"When the sketching process began, I chose the colors blue, green, and purple, as I thought these created a good harmony together. After checking the contrast of the colors and the text and thinking that everyone should be able to distinguish these colors, I found that the best thing was to change the colors. Then it turned into blue, orange, and yellow. These colors create a greater contrast, and everyone can see the difference in the colors.\n\nTwo different fonts have been used, and they are the same on the web solution and in the application. A Copperplate has been used on headings, signatures, and buttons, and a Shree Devanagari 714 on the body text and other smaller elements. Both texts are easy to read; Copperplate is only capitals with a few serifs.\n\nI have chosen to include some graphic elements in the form of different parts of a guitar. I have used these in various places in both the application and the online solution, to give a connection in the layout, and to create balance and symmetry.\n\nThe colors have been selected with accessibility in mind — checking protanopia, deuteranopia, and tritanopia color vision profiles. There are also 7 principles under universal design that have been considered: equal opportunities for use, flexible in use, simple and intuitive, comprehensible information, tolerance for errors, low physical effort, and size and space for access and use."},
+
+    {"type":"image","src":"images/ABBP/Guitar.png","variant":"logo"},
+
+    {"type":"heading","text":"Reflection"},
+    {"type":"text","content":"Both friends and supervisors have looked through my thesis endless times, where everyone has their own perspective, attitudes, and opinions about what they like and how they think a website should look. In the end, I think I have got a good prototype where you can intuitively navigate your way forward.\n\nWhen I first started designing the application via Adobe XD I chose a terrible loop font that was barely readable — I was so happy with my choice until I showed it off. I had seen the text as a design element and forgot that it should perhaps be legible. Fortunately I received several similar hints throughout and ended up with a prototype that I am very happy with. Personally, I found it clean, stylish, up to date with today's trends and conventions, accessible to everyone including those with impaired color vision, and in line with WCAG and universal design principles.\n\nIt is important not to make too many compromises with WCAG — you must design for everyone — but if you design strictly according to WCAG, you will end up with a page without personality and character. One of these trends is \"flat design\", which is about the elements not having a shadow that makes the elements jump off the page. I have chosen to ignore this on my page, as I feel it complicates the expression I am trying to create. However, I have adopted some well-known conventions such as the hamburger menu and the green color of the log in button and back buttons, so that the user does not have any doubts about how to navigate the page.\n\nDuring the implementation of this task, we met with the supervisor practically every week, received input on what we had done well and what we could do better. It has been an incredibly educational process where you gain experience in finding out today's trends, which conventions you should follow, and how important it is to have the user in focus."}
+  ]
+  </script>
+
+  <!-- WALTER & VERA SECTIONS DATA -->
+  <script type="application/json" id="sections-walter-vera">
+  [
+    {"type":"heading","text":"Bachelor's thesis"},
+    {"type":"text","content":"The bachelor thesis is a three part project that progressed through three semesters. Through this page I hope to give an insight to the work we did and how the group progressed."},
+    {"type":"image","src":"images/Walter og Vera/Del 1/TaraOgClara.png"},
+
+    {"type":"heading","text":"3rd semester — Innovation and entrepreneurship"},
+    {"type":"text","content":"During my 3rd semester we had a course named Innovation and entrepreneurship where we were to plan and implement a development project. The goal was to understand how to design innovative interactive services through designing narrative content and a business plan for a media service that motivates interaction.\n\nWe were paired with a local newspaper called Oppland Arbeiderblad (OA) and given the task: a prototype for a media service using sound, interaction, and possibly visual media — a service that inspires sharing and creating stories, targeting children aged 7–19.\n\nIn my group we were three girls, all with strong voices and a lot of ideas. We started with ideating, finding a common ground, and making sure everyone had their say. After an idea began forming, we checked what already existed and saw our idea was unique. As we wanted to use sound for our prototype, our lecturer advised us to use proto.io instead of Figma, so we got to learn a new programme as well.\n\nOur solution is called Tara og Clara — the idea is based on two characters who play off each other and convey news in a fun and understandable manner. We created personas and used these as a base throughout the project."},
+    {"type":"images","srcs":["images/Walter og Vera/Del 1/Tara.png","images/Walter og Vera/Del 1/Clara.png"]},
+    {"type":"images","srcs":["images/Walter og Vera/Del 1/Tara persona.jpg","images/Walter og Vera/Del 1/Clara persona.jpg"]},
+    {"type":"text","content":"We created a problem statement that was reformulated multiple times as the project evolved. The final version can be translated to:\n\n\"Tara and Clara will inspire and motivate children who want to catch up on what is happening in the world and at other schools, and contribute to creating a better basis for relationships, reflection, and discussion with other children, parents, and teachers.\"\n\nIn Norway, all students from 1st to 7th grade get an iPad to use at school and for homework — information we gathered during interviews with both teachers and pupils. This made the iPad the perfect platform to design for, as our target group already had access to it."},
+    {"type":"image","src":"images/Walter og Vera/Del 1/Tara_Clara_Scenario.jpg"},
+    {"type":"images","srcs":["images/Walter og Vera/Del 1/Tara_Clara_app_1.jpg","images/Walter og Vera/Del 1/Tara_Clara_app_2.jpg","images/Walter og Vera/Del 1/Tara_Clara_app_3.jpg","images/Walter og Vera/Del 1/Tara_Clara_app_4.jpg"]},
+
+    {"type":"heading","text":"Tara and Klara"},
+    {"type":"text","content":"We created scenarios to show when the target group could use the solution:\n\n• After school<br>• At school in class where they discuss news<br>• By the breakfast table<br>• With friends and family\n\nOur solution is an app for both phones and tablets, where two news anchors talk to each other to deliver news that correlates with what they learn at school, what other schools are doing, and delivers tough news in a way that is not degrading.\n\nThis last part was very important to the kids — they are interested in the news, but news on TV can be scary or hard to understand. Tara and Clara tell this news in the kids' language, in a way that is understandable."},
+
+    {"type":"heading","text":"4th semester — Project development in creative business"},
+    {"type":"text","content":"During my 4th semester we had a course called Project development in creative business. This is a specialization course that through in-depth tasks makes students work with conceptual problem solving, product development, innovative communication solutions, and user-centred development of work processes. The course is meant as preparatory for the bachelors, and my group took this as an advantage to take a deeper dive into our idea Tara and Klara.\n\nOne of the first things we had to do was find an employer to write our bachelors for. We sent out a few requests to different agencies and came in contact with TV 2 Elevkanalen (the student channel) — a teaching resource portal for primary school pupils linked to the competence targets in Competence Norway. They are already in all the schools, keep up with the curriculum, and deliver news to kids. We wanted to see if our idea would fit better with the pupils and in the classroom.\n\nThe final problem statement for this project was: How can the project group, with insight into the target group, find out how Tara and Klara can take part in and influence the everyday life of students in grades 1–4 through the mediation of news?\n\nThe project follows the first diamond in the double diamond, focusing on getting enough insight to make sure we are designing the right things and building a better foundation for our solution. We went through existing solutions, previous work, got to know our employer better, and reviewed privacy regulations before conducting interviews with primary school children.\n\nThrough our work we gathered a lot of data, and we used Miro, a digital whiteboard, to gather and work through it all. This project ended with a report that became the foundation of our bachelor's thesis."},
+    {"type":"image","src":"images/Walter og Vera/Del 2/Tara og Klara_IMT3007.jpg"},
+    {"type":"images","srcs":["images/Walter og Vera/Del 2/Persona.png","images/Walter og Vera/Del 2/Screenshot 2022-11-06 at 20.47.27.png","images/Walter og Vera/Del 2/Screenshot 2022-11-06 at 20.47.40.png","images/Walter og Vera/Del 2/Screenshot 2022-11-06 at 20.47.56.png"]},
+
+    {"type":"heading","text":"Walter and Vera"},
+    {"type":"text","content":"A concept proposal for news broadcasting with sound and game elements.\n\nChildren raised from 2012 onwards are only used to an everyday life where digital tools play a natural role. With this comes great access to the news, where not everything is adapted to small consumers and can have traumatising consequences. TV 2 Elevkanalen commissioned the project and wanted to contribute as an important and relevant news source for students and teachers in grades 3–4.\n\nIn the bachelor's project, a solution was developed through design methods that visualises how the Student Channel can convey news to the target group in the most suitable way. \"Walter and Vera\" is a proposed solution where two news anchors present audio-based weekly programmes with associated tasks. Based on insight into the group's needs, Walter and Vera provides teachers with a safe and organised news source for the classroom, and students a secure platform that can contribute to discussion and knowledge of events in the world.\n\nMy role in the project was devil's advocate — asking critical questions at every crossroads to make sure we stayed on the right path. My area of responsibility covered technology, organisation, and software. I was responsible for creating and calling meetings, making prototypes, and working with Adobe software."},
+    {"type":"images","srcs":["images/Walter og Vera/Del 3/walter.png","images/Walter og Vera/Del 3/Vera profil.png"]},
+    {"type":"text","content":"The problem statement: How can \"Walter and Vera\", through Elevkanalen.no, contribute to discussion and inclusion of news in the classroom and at home, for teachers and students in grades 3–4?\n\nWe also defined three research questions:\n\n• How can we ensure that the concept appeals as best as possible to the target group?<br>• Because images and video can be traumatising for the target group, how can we use sound to convey news without it being at the expense of attention?<br>• In what way can the concept best fit into the everyday life of the target group?\n\nOne of the focus points was how much data pupils already consume every day, and how they perceive what they see and hear — as well as the communication that happens around what kids have absorbed online. Through the data collected we knew we had to include something that encouraged kids to talk about what Walter and Vera had said.\n\nFor this project the double diamond once again led the way. We started by reviewing everything done so far, what we wanted to accomplish, and what might be a hindrance. We went thoroughly through all parts of the diamond using many different methods."},
+    {"type":"image","src":"images/Walter og Vera/Del 3/D Designmal.png"},
+    {"type":"text","content":"Before ideating, we discussed how much to include in the solution and how to organise it. We made an information hierarchy to visualise this."},
+    {"type":"image","src":"images/Walter og Vera/Del 3/informasjonsarkitektur.jpg"},
+    {"type":"text","content":"We decided to use Figma to make our prototype — a programme I have spent a lot of time learning and was confident I could use to visualise our idea. A downside is that Figma doesn't support sound files, so we tested the sound and the prototype separately.\n\nThe group started the ideating phase individually to get a release from all the gathered ideas, resulting in a lot of sketches and brainstorming sessions. We then opened a Figma file and started a lo-fi prototype."},
+    {"type":"images","srcs":["images/Walter og Vera/Del 3/Lo-fi .jpg","images/Walter og Vera/Del 3/Lo-fi 1.jpg","images/Walter og Vera/Del 3/Lo-fi 2.jpg"]},
+    {"type":"text","content":"During the first round of designing the biggest challenge was following the information hierarchy and implementing all the information gathered through two earlier courses. From testing the lo-fi solution on peers, we made changes and moved on to a mid-fi prototype."},
+    {"type":"images","srcs":["images/Walter og Vera/Del 3/Mid-fi 1.png","images/Walter og Vera/Del 3/Mid-fi 2.png","images/Walter og Vera/Del 3/Mid-fi 3.png"]},
+    {"type":"text","content":"Our final design had a lot of remakes and changes. The first thing you see when opening the webpage is this week's broadcast, with a status bar showing what you can listen to.\n\nAlong the landing page you can see tasks connected to the broadcast: a quiz, conversation proposals, and the word of the week. Conversation proposals are discussion topics based on the content — for use at school, at home, or with friends. The word of the week clarifies difficult or new words from the episode, linked directly to a personal dictionary.\n\nYou earn points by answering the quiz correctly and adding words to your dictionary. Points go to the class's total score, where classes can compare with each other. We decided on a communal rather than individual scoring to encourage excitement around following the news together.\n\nThere are many more ideas in the prototype — <a href=\"https://www.figma.com/proto/8KBUbM4PRB2YgQhQsiJFxQ/Bach?page-id=270%3A4185&node-id=403-21153&viewport=408%2C606%2C0.03&scaling=scale-down&starting-point-node-id=403%3A21153\" target=\"_blank\" rel=\"noopener noreferrer\">feel free to take a look!</a>"},
+    {"type":"images","srcs":["images/Walter og Vera/Del 3/Hi-fi 1.jpg","images/Walter og Vera/Del 3/hi-fi 2.jpg","images/Walter og Vera/Del 3/hi-fi 3.jpg","images/Walter og Vera/Del 3/hi-fi 4.jpg"]},
+    {"type":"image","src":"images/Walter og Vera/Del 3/Screenshot 2022-11-06 at 21.21.25.png"}
+  ]
+  </script>
+
+  <!-- BENET SECTIONS DATA -->
+  <script type="application/json" id="sections-benet">
+  [
+    {"type":"text","content":"As a scientific assistant at NTNU, one of my first tasks was to design a business network for student internships. All third-year interaction design students complete an internship for 180 hours, and the process of finding and matching students to businesses had always been tedious and time-consuming. The goal was to make it easier for students and professors to find businesses and internships, with a clear overview of what students can apply to and which businesses NTNU works with. The project name BeNet is an acronym for business network.\n\nThere was a student assistant who had started the work of BeNet and conducted the first round of interviews. I started by looking at those findings and the design the student had come up with."},
+    {"type":"image","src":"images/Be-Net/Logo.png","variant":"logo"},
+    {"type":"image","src":"images/Be-Net/Screenshot 2022-10-20 at 10.29.30.png"},
+    {"type":"text","content":"Having a proposal to start from and information to go through, it was easy to start planning what more needed to be on each page and find photos and illustrations with the correct usage rights. As this is designed for NTNU, I had to follow the company's graphic profile, logo, and guidelines. After reading up on this I started in Figma, using the previous design as a base and filling it in with new information that met the correct requirements.\n\nThere were multiple redesigns, user testing rounds, and meetings with the project owner to make sure the design covered all areas and presented information in a way that was easy to gather — both for students and companies. <a href=\"https://www.figma.com/proto/f6bOlTEVy0HJerWZOMhIZA/BeNet?page-id=61%3A170&node-id=205%3A373&viewport=-117%2C417%2C0.02&scaling=scale-down&starting-point-node-id=205%3A373&show-proto-sidebar=1\" target=\"_blank\" rel=\"noopener noreferrer\">You can test the prototype here.</a>\n\nThis was my first time working with front-end developers and creating something that was coded and published. Getting this kind of experience was incredible and really fun — watching the design adapt to the limitations set by the developers, and finding ways to work around them, was as challenging as it was enjoyable.\n\nThis is one of the projects I learned most from and where I confirmed that this is really what I want to do. If you wish to see the final version, visit <a href=\"https://be-net.no\" target=\"_blank\" rel=\"noopener noreferrer\">be-net.no</a>."}
+  ]
+  </script>
+
+  <!-- RURALLURE SECTIONS DATA -->
+  <script type="application/json" id="sections-rurallure">
+  [
+    {"type":"text","content":"In Europe, hundreds of thousands of people set out each year to make their way to major places of worship and lesser-known ones. The pilgrimage routes have become a significant economic and cultural asset for Europe.\n\nThe rurAllure (rural allure) project addresses one weak point hidden behind this success: the pilgrimage routes may be traversed by thousands, but their impact is almost exclusively felt in places located directly on the paths, rarely permeating into surrounding rural areas. Entire provinces facing significant economic and demographic challenges become passive witnesses to these flows of pilgrims — whereas they could add much of content and value to the experiences."},
+    {"type":"image","src":"images/rurAllure/IMG_1937.jpeg"},
+    {"type":"image","src":"images/rurAllure/Logotipo_simple_versiones-01.png","variant":"logo"},
+    {"type":"text","content":"I was part of this project for around four months, working on a pilot called Ethnographic Heritage on the Ways to Trondheim. This pilot aims to see heritage through the lens of how people have lived their lives along the St. Olav's ways — the pilgrimage paths to Trondheim — and make accessible how cultural, religious, and societal aspects contribute to rich historical heritage in the vicinity of the path. The pilot focused specifically on Gudbrandsdalsleden.\n\nDuring this project I worked as a design researcher: I created surveys, conducted interviews and workshops, found patterns in collected data, and created personas based on the findings. I worked mostly on finding points of interest and creating narratives. We found early on that those who walk the pilgrimage route often do so after major life changes — they want to challenge themselves and learn more about the history of the path they walk.\n\nThe thought behind the narratives is that there are two versions — one written and one recorded. Many want to walk in peace and ponder, but don't want to miss historical places along the way. I collected stories from old Norwegian folklore, found points of interest, and wrote about what happened in those areas. I started tying these stories and points together into a story one could walk from point to point — but unfortunately could not continue with the project as other more demanding tasks took priority.\n\nThis is not a finished project and is still ongoing. If you are interested in the progress, check out <a href=\"https://rurallure.eu/pilots/ethnographic-heritage-on-the-ways-to-trondheim/\" target=\"_blank\" rel=\"noopener noreferrer\">Ethnographic heritage on the ways to Trondheim</a> and <a href=\"https://rurallure.eu/\" target=\"_blank\" rel=\"noopener noreferrer\">rurAllure.eu</a>.\n\nYou can also read two of the narratives I wrote: <a href=\"images/rurAllure/Maihaugen 16.02.22.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">Maihaugen</a> and <a href=\"images/rurAllure/Mjøsas Ark 30.03.22.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">Mjøsas Ark</a>."}
+  ]
+  </script>
+
+  <!-- DIGICON SECTIONS DATA -->
+  <script type="application/json" id="sections-digicon">
+  [
+    {"type":"text","content":"A big part of my job at NTNU was our workshop/makerspace — a place where students could learn about additive and subtractive prototyping for use in various classes. Interaction design is not only digital; it is also about the physical spaces around us, and with the makerspace students could explore UX in different ways. As workshop manager, my tasks included:\n\n• Guidance for students<br>• Creating and holding courses<br>• Learning about new materials and new techniques<br>• Maintenance of machines and equipment"},
+    {"type":"image","src":"images/Digicon/UDLHE__Digicon_logo.png","variant":"logo"},
+    {"type":"text","content":"The workshop shares a space with a lecture room, which creates challenges for both students and lecturers — it was part of my job to make sure the two could co-exist. This created many opportunities for learning about designing spaces for diverse user needs. As part of the evolution of the makerspace, a colleague and I decided to speak at a conference called Digicon to get input from different perspectives.\n\n<a href=\"https://www.youtube.com/watch?v=sIzN5xsWceE\" target=\"_blank\" rel=\"noopener noreferrer\">Check out the conference contribution here.</a>\n\nPresenting at the conference was a lot of fun, and I learned a lot about how to communicate my work in a different way. Working more closely with academic colleagues and watching their approach was a great learning experience. The feedback from the audience during and after the conference was very helpful in the further development of the workshop.\n\nYou can also read the <a href=\"images/Digicon/Letter of confirmation - Presentation at Digicon 2022 - [47].pdf\" target=\"_blank\" rel=\"noopener noreferrer\">letter of confirmation</a> from the conference."}
+  ]
+  </script>
+
+  <!-- PROJECT OVERLAY -->
+  <div
+    class="overlay"
+    id="projectOverlay"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Project details"
+    inert
+  >
+    <div class="overlay-bg" id="overlayBg"></div>
+
+    <div class="overlay-panel" id="overlayPanel" tabindex="-1">
+      <button class="overlay-close" id="overlayClose" aria-label="Close project overlay">✕</button>
+      <p class="overlay-label" id="overlayLabel"></p>
+      <h2 class="overlay-title" id="overlayTitle"></h2>
+      <p class="overlay-desc" id="overlayDesc"></p>
+      <div class="overlay-images" id="overlayImages"></div>
+      <a href="#" class="overlay-link" id="overlayLink" target="_blank" rel="noopener noreferrer" style="display:none;">View project ↗</a>
+    </div>
+  </div>
+
+  <script>
+    /* ── OVERLAY SYSTEM ────────────────────────────── */
+    const overlay     = document.getElementById('projectOverlay');
+    const overlayBg   = document.getElementById('overlayBg');
+    const overlayClose = document.getElementById('overlayClose');
+    const overlayPanel = document.getElementById('overlayPanel');
+    const overlayLabel = document.getElementById('overlayLabel');
+    const overlayTitle = document.getElementById('overlayTitle');
+    const overlayDesc  = document.getElementById('overlayDesc');
+    const overlayImages = document.getElementById('overlayImages');
+    const overlayLink  = document.getElementById('overlayLink');
+
+    let lastFocused = null;
+
+    function openOverlay(card) {
+      lastFocused = document.activeElement;
+
+      const title  = card.dataset.title || '';
+      const label  = card.dataset.label || '';
+      const desc   = card.dataset.desc  || '';
+      const link   = card.dataset.link  || '';
+      let images = [];
+      try { images = JSON.parse(card.dataset.images || '[]'); } catch(e) {}
+
+      overlayLabel.textContent = label;
+      overlayTitle.innerHTML   = title;
+
+      // Support sections format: data-sections-id (script tag) or data-sections (inline JSON)
+      let sections = [];
+      const sectionsId = card.dataset.sectionsId || '';
+      if (sectionsId) {
+        const el = document.getElementById('sections-' + sectionsId);
+        if (el) try { sections = JSON.parse(el.textContent); } catch(e) {}
+      } else {
+        const sectionsRaw = card.dataset.sections || '';
+        try { if (sectionsRaw) sections = JSON.parse(sectionsRaw); } catch(e) {}
+      }
+
+      if (sections.length) {
+        // Rich sections format: [{type:'text',content:''}, {type:'image',src:''}, {type:'images',srcs:[]}]
+        overlayDesc.innerHTML = '';
+        overlayImages.innerHTML = '';
+        overlayImages.style.display = 'none';
+
+        sections.forEach(s => {
+          if (s.type === 'text') {
+            const div = document.createElement('div');
+            div.className = 'overlay-section-text';
+            div.innerHTML = s.content.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
+            overlayDesc.appendChild(div);
+          } else if (s.type === 'image') {
+            const wrap = document.createElement('div');
+            wrap.className = 'overlay-section-img';
+            const imgWrap = s.variant === 'logo' ? document.createElement('div') : wrap;
+            if (s.variant === 'logo') { imgWrap.className = 'overlay-section-img--logo'; wrap.appendChild(imgWrap); }
+            const img = document.createElement('img');
+            img.src = s.src; img.alt = title; img.loading = 'lazy';
+            img.onerror = function() { this.closest('.overlay-section-img').style.display = 'none'; };
+            imgWrap.appendChild(img);
+            overlayDesc.appendChild(wrap);
+          } else if (s.type === 'images') {
+            const row = document.createElement('div');
+            row.className = 'overlay-section-img-row';
+            (s.srcs || []).forEach(src => {
+              const img = document.createElement('img');
+              img.src = src; img.alt = title; img.loading = 'lazy';
+              img.onerror = function() { this.style.display = 'none'; };
+              row.appendChild(img);
+            });
+            overlayDesc.appendChild(row);
+          } else if (s.type === 'heading') {
+            const h = document.createElement('h3');
+            h.className = 'overlay-section-heading';
+            h.textContent = s.text || '';
+            overlayDesc.appendChild(h);
+          }
+        });
+      } else {
+        // Plain format
+        overlayDesc.innerHTML = desc.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
+        overlayImages.style.display = '';
+        overlayImages.innerHTML = '';
+        images.forEach(src => {
+          if (!src) return;
+          const img = document.createElement('img');
+          img.src = src; img.alt = title + ' project image'; img.loading = 'lazy';
+          img.onerror = function() { this.style.display = 'none'; };
+          overlayImages.appendChild(img);
+        });
+      }
+
+      // Link button
+      if (link) {
+        overlayLink.href = link;
+        overlayLink.style.display = 'inline-flex';
+      } else {
+        overlayLink.style.display = 'none';
+      }
+
+      overlay.scrollTop = 0;
+      overlay.removeAttribute('inert');
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      // Focus panel after animation
+      setTimeout(() => {
+        overlayClose.focus();
+      }, 370);
+    }
+
+    function closeOverlay() {
+      overlay.classList.remove('open');
+      overlay.setAttribute('inert', '');
+      document.body.style.overflow = '';
+      if (lastFocused) lastFocused.focus();
+    }
+
+    // Click/Enter/Space on cards
+    document.querySelectorAll('.proj-card').forEach(card => {
+      card.addEventListener('click', () => openOverlay(card));
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openOverlay(card);
+        }
+      });
+    });
+
+    // Close triggers
+    overlayBg.addEventListener('click', closeOverlay);
+    overlayClose.addEventListener('click', closeOverlay);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeOverlay();
+    });
+
+    // Focus trap
+    overlay.addEventListener('keydown', e => {
+      if (e.key !== 'Tab') return;
+      const focusable = Array.from(
+        overlay.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+      ).filter(el => !el.closest('[inert]') && el !== overlayPanel);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    });
+  </script>
+
+</body>
+</html>

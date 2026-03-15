@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Ida Parelius</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── DESIGN TOKENS ──────────────────────── */
+    :root {
+      --bg:          #F8F7FF;
+      --surface:     #FFFFFF;
+      --text:        #1A1420;
+      --text-sec:    rgba(26,20,32,0.6);
+      --purple:      #4E3388;
+      --purple-mid:  #7055B8;
+      --purple-lite: #C4B0F0;
+      --border:      rgba(78,51,136,0.12);
+      --font:        'Space Grotesk', sans-serif;
+      --mono:        'Space Mono', monospace;
+      --r:           10px;
+      --ease:        ease-in-out 0.3s;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      opacity: 0;
+      animation: pageIn 0.6s ease-in-out 0.05s forwards;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── NAV ─────────────────────────────────── */
+    .nav-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248,247,255,0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-monogram {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--purple);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color var(--ease);
+    }
+    .nav-monogram:hover { color: var(--purple-mid); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      text-decoration: none;
+      padding: 4px 0;
+      position: relative;
+      transition: color var(--ease);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--purple);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-links a.active {
+      color: var(--purple);
+      font-weight: 700;
+    }
+    .nav-links a.active::after { transform: scaleX(1); }
+
+    /* ── MAIN ─────────────────────────────────── */
+    .page-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 40px;
+    }
+
+    /* ── INTRO SECTION ───────────────────────── */
+    .intro {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 56px;
+      align-items: center;
+      margin-bottom: 72px;
+    }
+
+    .intro-text {}
+
+    .page-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--purple-mid);
+      margin-bottom: 16px;
+    }
+
+    .page-heading {
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 32px;
+    }
+
+    .bio p {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .bio p:last-child { margin-bottom: 0; }
+
+    /* ── PHOTO PLACEHOLDER ───────────────────── */
+    .photo-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* LEGG TIL BILDE HER */
+    .photo-placeholder {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(78,51,136,0.12) 0%, rgba(196,176,240,0.25) 100%);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-sec);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .photo-placeholder svg {
+      opacity: 0.4;
+    }
+
+    /* ── CONNECT SECTION ─────────────────────── */
+    .connect {
+      border-top: 1px solid var(--border);
+      padding-top: 48px;
+    }
+
+    .connect-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--purple-mid);
+      margin-bottom: 20px;
+    }
+
+    .connect-heading {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .connect-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--r);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background var(--ease), color var(--ease), border-color var(--ease), transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--purple);
+      color: #ffffff;
+      border: 1px solid var(--purple);
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-mid);
+      border-color: var(--purple-mid);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--purple);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--purple-mid);
+      color: var(--purple-mid);
+    }
+
+    /* ── FOCUS ────────────────────────────────── */
+    :focus-visible {
+      outline: 2px solid var(--purple);
+      outline-offset: 4px;
+      border-radius: 3px;
+    }
+
+    /* ── MOBILE ──────────────────────────────── */
+    @media (max-width: 680px) {
+      .page-content { padding: 48px 20px; }
+
+      .intro {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        margin-bottom: 48px;
+      }
+
+      .photo-col {
+        order: 1;
+        display: flex;
+        justify-content: center;
+      }
+
+      .photo-col img {
+        max-width: 160px;
+      }
+
+      .connect-buttons { gap: 10px; }
+
+      .btn { font-size: 0.68rem; padding: 9px 16px; }
+    }
+
+    /* ── REDUCED MOTION ──────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav-wrapper">
+    <nav class="nav-inner" aria-label="Primary navigation">
+      <a href="index.html" class="nav-monogram" aria-label="Ida Parelius — home">IP</a>
+      <ul class="nav-links">
+        <li><a href="about.html" class="active" aria-current="page">About</a></li>
+        <li><a href="cv.html">CV</a></li>
+        <li><a href="projects.html">Projects</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="page-content">
+
+      <!-- INTRO: 2-column -->
+      <section class="intro" aria-label="Introduction">
+
+        <!-- Left: text -->
+        <div class="intro-text">
+          <p class="page-label">About me</p>
+          <h1 class="page-heading">Ida Parelius</h1>
+          <div class="bio">
+            <p>I am a newly graduated interaction designer and took my bachelor's degree at NTNU Gjøvik. I am a curious, creative, and friendly soul who is always looking for new challenges.</p>
+            <p>When I started my journey with NTNU, I was determined that computer engineering was the profession for me, but it wasn't. After one semester, I was lucky enough to switch to interaction design, which I'm passionate about.</p>
+            <p>In order not to miss any lessons or any of the many opportunities NTNU offers, I have taken on jobs as a student assistant — assisting lecturers in their subjects and helping students with various tasks. I also worked at the university helping students with psychosocial health and making sure all students at the Department of Design have what they need to thrive.</p>
+            <p>In this portfolio I present projects from my time as a student at NTNU and as a first consultant, scientific assistant, and workshop manager.</p>
+          </div>
+        </div>
+
+        <!-- Right: photo placeholder -->
+        <div class="photo-col">
+          <img src="images/ida.jpg" alt="Ida Parelius" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:12px;display:block;box-shadow:0 8px 32px rgba(78,51,136,0.18);">
+        </div>
+
+      </section>
+
+      <!-- CONNECT -->
+      <section class="connect" aria-label="Connect">
+        <p class="connect-label">Get in touch</p>
+        <h2 class="connect-heading">Let's connect</h2>
+        <div class="connect-buttons">
+          <a href="cv.html" class="btn btn-primary">View CV →</a>
+          <a href="projects.html" class="btn btn-secondary">See Projects →</a>
+          <a href="mailto:ida.parelius@gmail.com" class="btn btn-secondary">Email</a>
+          <a href="https://www.linkedin.com/in/idaparelius/" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+</body>
+</html>
