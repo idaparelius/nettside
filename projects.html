@@ -255,14 +255,12 @@
       position: fixed;
       inset: 0;
       z-index: 300;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       padding: 32px 24px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.35s ease;
-      overflow: hidden;
     }
 
     .overlay.open {
@@ -288,17 +286,15 @@
       border-radius: 14px;
       max-width: 780px;
       width: 100%;
-      max-height: calc(100vh - 64px);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      margin: 0 auto;
       padding: 48px;
       color: rgba(244,240,249,0.95);
-      transform: translateY(16px) scale(0.98);
+      transform: translateY(16px);
       transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .overlay.open .overlay-panel {
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
 
     .overlay-close {
@@ -499,7 +495,7 @@
       }
 
       .overlay { padding: 16px; }
-      .overlay-panel { max-height: calc(100vh - 32px); padding: 28px 24px; }
+      .overlay-panel { padding: 28px 24px; }
 
       .overlay-images img {
         height: 140px;
@@ -1042,7 +1038,7 @@ The lecture I had was very successful and the Figma file has been shared with ev
         overlayLink.style.display = 'none';
       }
 
-      overlayPanel.scrollTop = 0;
+      overlay.scrollTop = 0;
       overlay.removeAttribute('inert');
       overlay.classList.add('open');
       lockScroll();
