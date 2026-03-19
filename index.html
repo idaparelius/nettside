@@ -65,11 +65,11 @@
 
     .c-ring {
       width: 30px; height: 30px;
-      border: 1px solid var(--lav-20);
+      border: 1px solid rgba(196,176,240,0.45);
       transition: width .22s var(--ease), height .22s var(--ease), border-color .22s;
     }
 
-    body.ch .c-ring  { width: 46px; height: 46px; border-color: var(--pur-40); }
+    body.ch .c-ring  { width: 46px; height: 46px; border-color: rgba(196,176,240,0.75); }
     body.ch .c-dot   { width: 3px; height: 3px; }
 
     /* ── BACKGROUND LAYERS ──────────────────── */
@@ -279,67 +279,35 @@
     }
 
     /* ── SHIP POPUP ──────────────────────────── */
-    .ship-popup {
+    .ship-toast {
       position: fixed;
       z-index: 600;
-      background: rgba(14,11,28,0.96);
+      background: rgba(14,11,28,0.92);
       border: 1px solid rgba(196,176,240,0.18);
-      border-radius: 12px;
-      padding: 22px 26px 20px;
-      width: 220px;
-      opacity: 0;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--purple-lite);
+      white-space: nowrap;
       pointer-events: none;
-      transform: translateY(8px) scale(0.96);
-      transition: opacity 0.28s ease, transform 0.28s var(--ease);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    .ship-popup.open {
+    .ship-toast.show {
       opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
-    .ship-popup-close {
-      position: absolute; top: 10px; right: 12px;
-      background: none; border: none;
-      color: var(--lav-60); font-size: 0.75rem;
-      cursor: none; padding: 4px 6px;
-      transition: color 0.2s;
-    }
-    .ship-popup-close:hover { color: var(--lav); }
-    .ship-popup-label {
-      font-family: var(--mono);
-      font-size: 0.56rem; letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--purple-mid); margin-bottom: 10px;
-    }
-    .ship-popup-name {
-      font-size: 0.95rem; font-weight: 600;
-      color: var(--lav); margin-bottom: 3px;
-      letter-spacing: -0.01em;
-    }
-    .ship-popup-email {
-      font-family: var(--mono);
-      font-size: 0.62rem; color: var(--lav-60);
-      margin-bottom: 16px;
-    }
-    .ship-popup-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--purple); color: var(--lav);
-      text-decoration: none;
-      font-family: var(--mono); font-size: 0.64rem;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 9px 16px; border-radius: 6px;
-      transition: background 0.2s ease;
-    }
-    .ship-popup-btn:hover { background: var(--purple-mid); }
 
     @media (max-width: 700px) {
       .ship { width: 36px; height: 46px; }
     }
     @media (hover: none) {
       .ship { cursor: pointer; }
-      .ship-popup-close { cursor: pointer; }
     }
   </style>
 </head>
@@ -374,14 +342,8 @@
               fill="rgba(196,176,240,0.85)"/>
     </svg>
   </button>
-  <div class="ship-hint" id="shipHint" aria-hidden="true">// hail me</div>
-  <div class="ship-popup" id="shipPopup" role="dialog" aria-modal="true" aria-label="Contact Ida Parelius">
-    <button class="ship-popup-close" id="shipClose" aria-label="Close">✕</button>
-    <p class="ship-popup-label">// hailing frequency</p>
-    <h2 class="ship-popup-name">Ida Parelius</h2>
-    <p class="ship-popup-email">ida.parelius@gmail.com</p>
-    <a href="mailto:ida.parelius@gmail.com" class="ship-popup-btn">Send message →</a>
-  </div>
+  <div class="ship-hint" id="shipHint" aria-hidden="true">mail me</div>
+  <div class="ship-toast" id="shipToast" aria-live="polite"></div>
 
   <!-- MAIN CONTENT -->
   <main class="main">
@@ -477,10 +439,10 @@
 
     /* ── SPACESHIP ──────────────────────────── */
     (function initShip() {
-      const ship    = document.getElementById('ship');
-      const hint    = document.getElementById('shipHint');
-      const popup   = document.getElementById('shipPopup');
-      const closeBtn = document.getElementById('shipClose');
+      const ship  = document.getElementById('ship');
+      const hint  = document.getElementById('shipHint');
+      const toast = document.getElementById('shipToast');
+      const EMAIL = 'ida.parelius@gmail.com';
 
       const PAD = 52;
       let W = window.innerWidth, H = window.innerHeight;
@@ -490,8 +452,7 @@
       let angle = Math.random() * Math.PI * 2;
       let vx = Math.cos(angle) * SPD;
       let vy = Math.sin(angle) * SPD;
-      let paused = false;
-      let animId;
+      let toastTimer;
 
       window.addEventListener('resize', () => { W = window.innerWidth; H = window.innerHeight; });
 
@@ -503,20 +464,18 @@
       }
 
       function tick() {
-        if (!paused) {
-          if (Math.random() < 0.016) {
-            angle = Math.atan2(vy, vx) + (Math.random() - 0.5) * 0.7;
-            vx = Math.cos(angle) * SPD;
-            vy = Math.sin(angle) * SPD;
-          }
-          sx += vx; sy += vy;
-          if (sx < PAD)     { sx = PAD;     vx =  Math.abs(vx); }
-          if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); }
-          if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); }
-          if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); }
-          place();
+        if (Math.random() < 0.016) {
+          angle = Math.atan2(vy, vx) + (Math.random() - 0.5) * 0.7;
+          vx = Math.cos(angle) * SPD;
+          vy = Math.sin(angle) * SPD;
         }
-        animId = requestAnimationFrame(tick);
+        sx += vx; sy += vy;
+        if (sx < PAD)     { sx = PAD;     vx =  Math.abs(vx); }
+        if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); }
+        if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); }
+        if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); }
+        place();
+        requestAnimationFrame(tick);
       }
 
       place();
@@ -530,40 +489,35 @@
         setTimeout(() => { hint.style.opacity = '0'; }, 2600);
       }, 1800);
 
-      // Open popup
-      ship.addEventListener('click', () => {
-        paused = true;
-        const pw = 220, ph = 150;
-        let px = sx - pw / 2;
-        let py = sy - 18 - ph - 14;
-        if (py < 12) py = sy + 30;
-        if (px < 12) px = 12;
-        if (px + pw > W - 12) px = W - pw - 12;
-        popup.style.left = px + 'px';
-        popup.style.top  = py + 'px';
-        popup.classList.add('open');
-        setTimeout(() => closeBtn.focus(), 50);
-      });
-
-      function closePopup() {
-        popup.classList.remove('open');
-        paused = false;
+      function showToast(msg) {
+        clearTimeout(toastTimer);
+        toast.textContent = msg;
+        const tw = 220;
+        let tx = sx - tw / 2;
+        let ty = sy - 48;
+        if (ty < 12) ty = sy + 36;
+        if (tx < 12) tx = 12;
+        if (tx + tw > W - 12) tx = W - tw - 12;
+        toast.style.left = tx + 'px';
+        toast.style.top  = ty + 'px';
+        toast.classList.add('show');
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
       }
 
-      closeBtn.addEventListener('click', closePopup);
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && popup.classList.contains('open')) closePopup();
-      });
-      document.addEventListener('click', e => {
-        if (popup.classList.contains('open') && !popup.contains(e.target) && e.target !== ship) closePopup();
+      // Click — copy email, show toast; fallback to mailto
+      ship.addEventListener('click', () => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(EMAIL)
+            .then(() => showToast('copied to clipboard ✓'))
+            .catch(() => { window.location.href = 'mailto:' + EMAIL; });
+        } else {
+          window.location.href = 'mailto:' + EMAIL;
+        }
       });
 
       // Register with custom cursor
-      [ship, closeBtn, document.querySelector('.ship-popup-btn')].forEach(el => {
-        if (!el) return;
-        el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
-        el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
-      });
+      ship.addEventListener('mouseenter', () => document.body.classList.add('ch'));
+      ship.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
     })();
 
     /* ── AMBIENT GLOW FOLLOWS MOUSE ─────────── */
