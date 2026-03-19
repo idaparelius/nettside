@@ -189,7 +189,12 @@
     .proj-card:hover {
       border-color: rgba(78,51,136,0.4);
       box-shadow: 0 4px 20px rgba(78,51,136,0.08);
-      transform: translateY(-2px);
+    }
+
+    @media (hover: hover) {
+      .proj-card:hover {
+        transform: translateY(-2px);
+      }
     }
 
     .proj-card:focus-visible {
@@ -263,6 +268,8 @@
       pointer-events: none;
       transition: opacity 0.35s ease;
       overflow: hidden;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
 
     .overlay.open {
@@ -958,20 +965,13 @@ The lecture I had was very successful and the Figma file has been shared with ev
 
     let lastFocused = null;
 
-    function openOverlay(card) {
-      lastFocused = document.activeElement;
-
+    function buildPanelContent(card) {
       const title  = card.dataset.title || '';
-      const label  = card.dataset.label || '';
       const desc   = card.dataset.desc  || '';
       const link   = card.dataset.link  || '';
       let images = [];
       try { images = JSON.parse(card.dataset.images || '[]'); } catch(e) {}
 
-      overlayLabel.textContent = label;
-      overlayTitle.innerHTML   = title;
-
-      // Support sections format: data-sections-id (script tag) or data-sections (inline JSON)
       let sections = [];
       const sectionsId = card.dataset.sectionsId || '';
       if (sectionsId) {
@@ -982,18 +982,16 @@ The lecture I had was very successful and the Figma file has been shared with ev
         try { if (sectionsRaw) sections = JSON.parse(sectionsRaw); } catch(e) {}
       }
 
-      if (sections.length) {
-        // Rich sections format: [{type:'text',content:''}, {type:'image',src:''}, {type:'images',srcs:[]}]
-        overlayDesc.innerHTML = '';
-        overlayImages.innerHTML = '';
-        overlayImages.style.display = 'none';
+      const frag = document.createDocumentFragment();
 
+      if (sections.length) {
+        overlayImages.style.display = 'none';
         sections.forEach(s => {
           if (s.type === 'text') {
             const div = document.createElement('div');
             div.className = 'overlay-section-text';
             div.innerHTML = s.content.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
-            overlayDesc.appendChild(div);
+            frag.appendChild(div);
           } else if (s.type === 'image') {
             const wrap = document.createElement('div');
             wrap.className = 'overlay-section-img';
@@ -1003,7 +1001,7 @@ The lecture I had was very successful and the Figma file has been shared with ev
             img.src = s.src; img.alt = title; img.loading = 'lazy';
             img.onerror = function() { this.closest('.overlay-section-img').style.display = 'none'; };
             imgWrap.appendChild(img);
-            overlayDesc.appendChild(wrap);
+            frag.appendChild(wrap);
           } else if (s.type === 'images') {
             const row = document.createElement('div');
             row.className = 'overlay-section-img-row';
@@ -1013,16 +1011,18 @@ The lecture I had was very successful and the Figma file has been shared with ev
               img.onerror = function() { this.style.display = 'none'; };
               row.appendChild(img);
             });
-            overlayDesc.appendChild(row);
+            frag.appendChild(row);
           } else if (s.type === 'heading') {
             const h = document.createElement('h3');
             h.className = 'overlay-section-heading';
             h.textContent = s.text || '';
-            overlayDesc.appendChild(h);
+            frag.appendChild(h);
           }
         });
+        overlayDesc.innerHTML = '';
+        overlayDesc.appendChild(frag);
+        overlayImages.innerHTML = '';
       } else {
-        // Plain format
         overlayDesc.innerHTML = desc.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
         overlayImages.style.display = '';
         overlayImages.innerHTML = '';
@@ -1035,17 +1035,30 @@ The lecture I had was very successful and the Figma file has been shared with ev
         });
       }
 
-      // Link button
       if (link) {
         overlayLink.href = link;
         overlayLink.style.display = 'inline-flex';
       } else {
         overlayLink.style.display = 'none';
       }
+    }
+
+    function openOverlay(card) {
+      lastFocused = document.activeElement;
+
+      overlayLabel.textContent = card.dataset.label || '';
+      overlayTitle.innerHTML   = card.dataset.title || '';
+      overlayDesc.innerHTML    = '';
+      overlayImages.innerHTML  = '';
 
       overlayPanel.scrollTop = 0;
       overlay.removeAttribute('inert');
       overlay.classList.add('open');
+
+      // Populate content after overlay is visible to avoid UI freeze on mobile
+      requestAnimationFrame(() => {
+        buildPanelContent(card);
+      });
 
       // Focus panel after animation
       setTimeout(() => {
