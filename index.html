@@ -248,10 +248,14 @@
     .ship {
       position: fixed;
       width: 28px; height: 36px;
-      background: none; border: none; padding: 0;
+      background: none; border: none;
+      padding: 10px;
+      margin: -10px;
       z-index: 500;
       cursor: none;
       pointer-events: auto;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
       filter: drop-shadow(0 0 5px rgba(196,176,240,0.35));
       transition: filter 0.25s ease;
       will-change: left, top, transform;
@@ -512,6 +516,9 @@
 
       place();
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) tick();
+
+      // iOS fix: body overflow:hidden can block touch on fixed elements
+      document.addEventListener('touchstart', function(){}, {passive: true});
 
       // Hint — appears briefly after 1.8s
       setTimeout(() => {
