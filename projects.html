@@ -1042,10 +1042,10 @@ The lecture I had was very successful and the Figma file has been shared with ev
         overlayLink.style.display = 'none';
       }
 
-      overlay.scrollTop = 0;
+      overlayPanel.scrollTop = 0;
       overlay.removeAttribute('inert');
       overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
+      lockScroll();
 
       // Focus panel after animation
       setTimeout(() => {
@@ -1056,8 +1056,23 @@ The lecture I had was very successful and the Figma file has been shared with ev
     function closeOverlay() {
       overlay.classList.remove('open');
       overlay.setAttribute('inert', '');
-      document.body.style.overflow = '';
+      unlockScroll();
       if (lastFocused) lastFocused.focus();
+    }
+
+    // iOS-safe scroll lock: prevents page jump on Safari
+    let _scrollY = 0;
+    function lockScroll() {
+      _scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${_scrollY}px`;
+      document.body.style.width = '100%';
+    }
+    function unlockScroll() {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, _scrollY);
     }
 
     // Click/Enter/Space on cards
