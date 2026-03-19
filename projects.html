@@ -268,8 +268,6 @@
       pointer-events: none;
       transition: opacity 0.35s ease;
       overflow: hidden;
-      transform: translateZ(0);
-      -webkit-transform: translateZ(0);
     }
 
     .overlay.open {
@@ -283,8 +281,8 @@
       background: rgba(10,6,20,0.78);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      cursor: pointer;
       z-index: 0;
+      pointer-events: none;
     }
 
     .overlay-panel {
@@ -296,9 +294,10 @@
       max-width: 780px;
       width: 100%;
       max-height: calc(100dvh - 64px);
-      overflow-y: auto;
+      overflow-y: scroll;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
+      touch-action: pan-y;
       padding: 48px;
       color: rgba(244,240,249,0.95);
       transform: translateY(16px);
@@ -1084,7 +1083,9 @@ The lecture I had was very successful and the Figma file has been shared with ev
     });
 
     // Close triggers
-    overlayBg.addEventListener('click', closeOverlay);
+    overlay.addEventListener('click', e => {
+      if (!overlayPanel.contains(e.target)) closeOverlay();
+    });
     overlayClose.addEventListener('click', closeOverlay);
 
     document.addEventListener('keydown', e => {
