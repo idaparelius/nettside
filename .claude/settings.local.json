@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"fagfadder\\\\|Gjøvik\\\\|NTNU\\\\|øverste\\\\|Rotert firkant\\\\|diamant\\\\|bytt ut\\\\|LEGG TIL\\\\|ikke\\\\|skal\" /Users/idaparelius/Documents/Claude/idaparelius/*.html)",
+      "Bash(grep -n 'src=\"\"images\\\\|src=\"\"Images' /Users/idaparelius/Documents/Claude/idaparelius/*.html)",
+      "WebFetch(domain:ricetta.no)",
+      "WebSearch",
+      "WebFetch(domain:www.tripadvisor.com)",
+      "WebFetch(domain:www.facebook.com)",
+      "WebFetch(domain:www.shifttransport.no)",
+      "WebFetch(domain:www.180.no)",
+      "WebFetch(domain:www.larseninvest.no)",
+      "WebFetch(domain:detailercliairmax.no)",
+      "WebFetch(domain:detailercliairmax.detailercliairmax.no)",
+      "Bash(curl -s -o logo.png \"https://detailercliairmax.no/uploads/detailercliairmax/image_files/preview/cfb071abd14eff961b273bf96317fa2f.png\")",
+      "Bash(curl -s -o car_white.jpeg \"https://detailercliairmax.no/uploads/detailercliairmax/image_files/preview/b5b48d6837f7ad11186796e0e0f4a9ac.jpeg\")",
+      "Bash(curl -s -o car_black.jpeg \"https://detailercliairmax.no/uploads/detailercliairmax/image_files/preview/21bf8c4500dd8eae55016721e9a8f5da.jpeg\")",
+      "Bash(curl -s -o car3.jpeg \"https://detailercliairmax.no/uploads/detailercliairmax/image_files/preview/9d103a5e918cc5b81dc4bdadfd10198f.jpeg\")",
+      "Bash(curl -s -o car4.jpeg \"https://detailercliairmax.no/uploads/detailercliairmax/image_files/preview/fd455204d10453650c189ef28fc2202d.jpeg\")",
+      "WebFetch(domain:nfpt.no)",
+      "WebFetch(domain:khp.no)",
+      "WebFetch(domain:www.proff.no)",
+      "WebFetch(domain:w2.brreg.no)",
+      "WebFetch(domain:data.brreg.no)"
+    ]
+  }
+}
