@@ -279,35 +279,61 @@
     }
 
     /* ── SHIP POPUP ──────────────────────────── */
-    .ship-toast {
+    .ship-popup {
       position: fixed;
       z-index: 600;
-      background: rgba(14,11,28,0.92);
+      background: rgba(14,11,28,0.96);
       border: 1px solid rgba(196,176,240,0.18);
-      border-radius: 8px;
-      padding: 9px 16px;
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
-      color: var(--purple-lite);
-      white-space: nowrap;
-      pointer-events: none;
+      border-radius: 12px;
+      padding: 20px 22px 18px;
+      width: 210px;
       opacity: 0;
-      transform: translateY(4px);
-      transition: opacity 0.22s ease, transform 0.22s ease;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      pointer-events: none;
+      transform: translateY(6px) scale(0.97);
+      transition: opacity 0.24s ease, transform 0.24s var(--ease);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
-    .ship-toast.show {
+    .ship-popup.open {
       opacity: 1;
-      transform: translateY(0);
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
     }
+    .ship-popup-close {
+      position: absolute; top: 10px; right: 12px;
+      background: none; border: none;
+      color: var(--lav-60); font-size: 0.72rem;
+      cursor: none; padding: 4px 6px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .ship-popup-close:hover { color: var(--lav); }
+    .ship-popup-email {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--lav-60);
+      margin-bottom: 14px;
+      padding-right: 20px;
+      word-break: break-all;
+    }
+    .ship-popup-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--purple); color: var(--lav);
+      text-decoration: none;
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 9px 15px; border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+    .ship-popup-btn:hover { background: var(--purple-mid); }
 
     @media (max-width: 700px) {
       .ship { width: 36px; height: 46px; }
     }
     @media (hover: none) {
       .ship { cursor: pointer; }
+      .ship-popup-close { cursor: pointer; }
+      .ship-popup-btn { cursor: pointer; }
     }
   </style>
 </head>
@@ -343,7 +369,11 @@
     </svg>
   </button>
   <div class="ship-hint" id="shipHint" aria-hidden="true">mail me</div>
-  <div class="ship-toast" id="shipToast" aria-live="polite"></div>
+  <div class="ship-popup" id="shipPopup" role="dialog" aria-modal="true" aria-label="Contact Ida Parelius">
+    <button class="ship-popup-close" id="shipClose" aria-label="Close">✕</button>
+    <p class="ship-popup-email">ida.parelius@gmail.com</p>
+    <a href="mailto:ida.parelius@gmail.com" class="ship-popup-btn">Send mail →</a>
+  </div>
 
   <!-- MAIN CONTENT -->
   <main class="main">
@@ -439,10 +469,10 @@
 
     /* ── SPACESHIP ──────────────────────────── */
     (function initShip() {
-      const ship  = document.getElementById('ship');
-      const hint  = document.getElementById('shipHint');
-      const toast = document.getElementById('shipToast');
-      const EMAIL = 'ida.parelius@gmail.com';
+      const ship     = document.getElementById('ship');
+      const hint     = document.getElementById('shipHint');
+      const popup    = document.getElementById('shipPopup');
+      const closeBtn = document.getElementById('shipClose');
 
       const PAD = 52;
       let W = window.innerWidth, H = window.innerHeight;
@@ -452,7 +482,7 @@
       let angle = Math.random() * Math.PI * 2;
       let vx = Math.cos(angle) * SPD;
       let vy = Math.sin(angle) * SPD;
-      let toastTimer;
+      let paused = false;
 
       window.addEventListener('resize', () => { W = window.innerWidth; H = window.innerHeight; });
 
@@ -464,17 +494,19 @@
       }
 
       function tick() {
-        if (Math.random() < 0.016) {
-          angle = Math.atan2(vy, vx) + (Math.random() - 0.5) * 0.7;
-          vx = Math.cos(angle) * SPD;
-          vy = Math.sin(angle) * SPD;
+        if (!paused) {
+          if (Math.random() < 0.016) {
+            angle = Math.atan2(vy, vx) + (Math.random() - 0.5) * 0.7;
+            vx = Math.cos(angle) * SPD;
+            vy = Math.sin(angle) * SPD;
+          }
+          sx += vx; sy += vy;
+          if (sx < PAD)     { sx = PAD;     vx =  Math.abs(vx); }
+          if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); }
+          if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); }
+          if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); }
+          place();
         }
-        sx += vx; sy += vy;
-        if (sx < PAD)     { sx = PAD;     vx =  Math.abs(vx); }
-        if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); }
-        if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); }
-        if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); }
-        place();
         requestAnimationFrame(tick);
       }
 
@@ -489,35 +521,40 @@
         setTimeout(() => { hint.style.opacity = '0'; }, 2600);
       }, 1800);
 
-      function showToast(msg) {
-        clearTimeout(toastTimer);
-        toast.textContent = msg;
-        const tw = 220;
-        let tx = sx - tw / 2;
-        let ty = sy - 48;
-        if (ty < 12) ty = sy + 36;
-        if (tx < 12) tx = 12;
-        if (tx + tw > W - 12) tx = W - tw - 12;
-        toast.style.left = tx + 'px';
-        toast.style.top  = ty + 'px';
-        toast.classList.add('show');
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+      // Open popup
+      ship.addEventListener('click', () => {
+        paused = true;
+        const pw = 210, ph = 110;
+        let px = sx - pw / 2;
+        let py = sy - 18 - ph - 14;
+        if (py < 12) py = sy + 36;
+        if (px < 12) px = 12;
+        if (px + pw > W - 12) px = W - pw - 12;
+        popup.style.left = px + 'px';
+        popup.style.top  = py + 'px';
+        popup.classList.add('open');
+        setTimeout(() => closeBtn.focus(), 50);
+      });
+
+      function closePopup() {
+        popup.classList.remove('open');
+        paused = false;
       }
 
-      // Click — copy email, show toast; fallback to mailto
-      ship.addEventListener('click', () => {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(EMAIL)
-            .then(() => showToast('copied to clipboard ✓'))
-            .catch(() => { window.location.href = 'mailto:' + EMAIL; });
-        } else {
-          window.location.href = 'mailto:' + EMAIL;
-        }
+      closeBtn.addEventListener('click', closePopup);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && popup.classList.contains('open')) closePopup();
+      });
+      document.addEventListener('click', e => {
+        if (popup.classList.contains('open') && !popup.contains(e.target) && e.target !== ship) closePopup();
       });
 
       // Register with custom cursor
-      ship.addEventListener('mouseenter', () => document.body.classList.add('ch'));
-      ship.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
+      [ship, closeBtn, popup.querySelector('.ship-popup-btn')].forEach(el => {
+        if (!el) return;
+        el.addEventListener('mouseenter', () => document.body.classList.add('ch'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('ch'));
+      });
     })();
 
     /* ── AMBIENT GLOW FOLLOWS MOUSE ─────────── */
