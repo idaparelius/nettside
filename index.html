@@ -359,6 +359,7 @@
   <button class="ship" id="ship" aria-label="Contact Ida — click to open hailing frequency">
     <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
+        <!-- Glow for center spine -->
         <filter id="lineGlow" x="-200%" y="-10%" width="500%" height="120%">
           <feGaussianBlur stdDeviation="1.4" result="blur"/>
           <feMerge>
@@ -366,22 +367,51 @@
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
+        <!-- Purple ambient glow around whole plane -->
+        <filter id="planeGlow" x="-60%" y="-25%" width="220%" height="150%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feFlood flood-color="rgba(140,55,255,0.45)" result="color"/>
+          <feComposite in="color" in2="blur" operator="in" result="colorBlur"/>
+          <feMerge>
+            <feMergeNode in="colorBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
-      <path d="M14 1 L26 29 L14 24 L2 29 Z"
-            fill="rgba(14,11,28,0.75)"
-            stroke="rgba(244,240,249,0.72)"
-            stroke-width="1.3" stroke-linejoin="round"/>
-      <line x1="14" y1="5" x2="14" y2="22"
-            stroke="rgba(155,70,255,0.35)" stroke-width="5"/>
-      <line x1="14" y1="5" x2="14" y2="22"
-            stroke="rgba(155,70,255,0.95)" stroke-width="1.4"
+
+      <!-- Plane body with purple ambient glow -->
+      <g filter="url(#planeGlow)">
+        <!-- Right wing panel -->
+        <path d="M14 1 L27 27 L15 22 Z"
+              fill="rgba(38,20,68,0.88)"
+              stroke="rgba(200,160,255,0.8)"
+              stroke-width="1.2" stroke-linejoin="round"/>
+        <!-- Left wing panel (slightly darker for depth) -->
+        <path d="M14 1 L1 27 L13 22 Z"
+              fill="rgba(22,12,44,0.95)"
+              stroke="rgba(200,160,255,0.8)"
+              stroke-width="1.2" stroke-linejoin="round"/>
+        <!-- Fuselage / body between wings -->
+        <path d="M13 22 L15 22 L17 32 L14 29 L11 32 Z"
+              fill="rgba(28,15,55,0.92)"
+              stroke="rgba(200,160,255,0.55)"
+              stroke-width="1" stroke-linejoin="round"/>
+      </g>
+
+      <!-- Wing fold crease lines -->
+      <line x1="14" y1="14" x2="24" y2="26" stroke="rgba(196,176,240,0.22)" stroke-width="0.8"/>
+      <line x1="14" y1="14" x2="4"  y2="26" stroke="rgba(196,176,240,0.22)" stroke-width="0.8"/>
+
+      <!-- Purple center spine — glow halo + sharp line -->
+      <line x1="14" y1="1" x2="14" y2="29"
+            stroke="rgba(155,70,255,0.32)" stroke-width="5"/>
+      <line x1="14" y1="1" x2="14" y2="29"
+            stroke="rgba(165,80,255,0.95)" stroke-width="1.4"
             filter="url(#lineGlow)"/>
-      <line x1="14" y1="17" x2="22" y2="27"
-            stroke="rgba(196,176,240,0.2)" stroke-width="0.8"/>
-      <line x1="14" y1="17" x2="6" y2="27"
-            stroke="rgba(196,176,240,0.2)" stroke-width="0.8"/>
-      <circle class="ship-engine" cx="14" cy="26" r="2.5"
-              fill="rgba(196,176,240,0.85)"/>
+
+      <!-- Engine -->
+      <circle class="ship-engine" cx="14" cy="28" r="2.5"
+              fill="rgba(196,176,240,0.9)"/>
     </svg>
   </button>
   <div class="ship-hint" id="shipHint" aria-hidden="true">mail me</div>
