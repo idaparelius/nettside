@@ -136,7 +136,7 @@
       font-weight: 300;
       color: var(--lav-60);
       letter-spacing: 0.01em;
-      margin-bottom: 52px;
+      margin-bottom: 68px;
       opacity: 0;
       animation: fu .9s .38s var(--ease) forwards;
     }
@@ -405,16 +405,6 @@
   <!-- MAIN CONTENT -->
   <main class="main">
 
-    <div class="logo" aria-label="Ida Parelius monogram">
-      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="9" y="9" width="30" height="30" rx="2"
-              transform="rotate(45 24 24)"
-              stroke="rgba(244,240,249,0.65)" stroke-width="1.4" fill="none"/>
-        <circle cx="24" cy="5.5" r="2" fill="#4E3388" opacity="0.7"/>
-        <circle cx="24" cy="42.5" r="2" fill="#4E3388" opacity="0.7"/>
-      </svg>
-    </div>
-
     <p class="role">UX / UI Designer</p>
     <h1 class="name">Ida Parelius</h1>
     <p class="tagline">Jeg gjør digitale produkter enklere å bruke</p>
@@ -490,39 +480,6 @@
       const closeBtn = document.getElementById('shipClose');
       const mailBtn  = popup.querySelector('.ship-popup-btn');
 
-      // ── Canvas exhaust trail ──────────────────
-      const trailCanvas = document.createElement('canvas');
-      trailCanvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:499;';
-      document.body.appendChild(trailCanvas);
-      const ctx = trailCanvas.getContext('2d');
-
-      const trail = [];
-      const TRAIL_LEN = 32;
-
-      function resizeTrail() {
-        trailCanvas.width  = window.innerWidth;
-        trailCanvas.height = window.innerHeight;
-      }
-      resizeTrail();
-
-      function drawTrail() {
-        ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
-        for (let i = 0; i < trail.length; i++) {
-          const p   = trail[i];
-          const age = i / trail.length;        // 0 = oldest, 1 = newest
-          const alpha  = age * 0.9;
-          const radius = 1.5 + age * 8;
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
-          grad.addColorStop(0,   `rgba(225,200,255,${alpha})`);
-          grad.addColorStop(0.4, `rgba(165,80,255,${(alpha * 0.55).toFixed(3)})`);
-          grad.addColorStop(1,   'rgba(100,40,200,0)');
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
-        }
-      }
-
       // ── Flight state ──────────────────────────
       const PAD = 52;
       let W = window.innerWidth, H = window.innerHeight;
@@ -539,10 +496,7 @@
       let wobbleT = Math.random() * Math.PI * 2;
       let paused  = false;
 
-      window.addEventListener('resize', () => {
-        W = window.innerWidth; H = window.innerHeight;
-        resizeTrail();
-      });
+      window.addEventListener('resize', () => { W = window.innerWidth; H = window.innerHeight; });
 
       function place() {
         ship.style.left = (sx - 14) + 'px';
@@ -573,28 +527,13 @@
           vy = (vy / vLen) * speed;
 
           sx += vx; sy += vy;
-          let bounced = false;
-          if (sx < PAD)     { sx = PAD;     vx =  Math.abs(vx); bounced = true; }
-          if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); bounced = true; }
-          if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); bounced = true; }
-          if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); bounced = true; }
-
-          if (bounced) {
-            // Clear trail on direction change so it never appears in front
-            trail.length = 0;
-          } else {
-            const exA = Math.atan2(-vy, -vx);
-            trail.push({ x: sx + Math.cos(exA) * 15, y: sy + Math.sin(exA) * 15 });
-            if (trail.length > TRAIL_LEN) trail.shift();
-          }
+          if (sx < PAD)     { sx = PAD;     vx =  Math.abs(vx); }
+          if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); }
+          if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); }
+          if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); }
 
           place();
-        } else {
-          // Gradually fade trail when paused
-          if (trail.length > 0) trail.shift();
         }
-
-        drawTrail();
         requestAnimationFrame(tick);
       }
 
