@@ -106,6 +106,18 @@
       animation: fu .9s .05s var(--ease) forwards;
     }
 
+    /* ── ROLE (label above name) ─────────────── */
+    .role {
+      font-family: var(--mono);
+      font-size: clamp(0.62rem, 1.4vw, 0.78rem);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--lav-60);
+      margin-bottom: 10px;
+      opacity: 0;
+      animation: fu .9s .18s var(--ease) forwards;
+    }
+
     /* ── NAME ────────────────────────────────── */
     .name {
       font-size: clamp(2.4rem, 5vw, 4rem);
@@ -113,28 +125,27 @@
       letter-spacing: -0.028em;
       line-height: 1;
       color: var(--lav);
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       opacity: 0;
-      animation: fu .9s .18s var(--ease) forwards;
+      animation: fu .9s .28s var(--ease) forwards;
     }
 
-    /* ── ROLE ────────────────────────────────── */
-    .role {
-      font-family: var(--mono);
-      font-size: clamp(0.62rem, 1.4vw, 0.78rem);
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
+    /* ── TAGLINE ─────────────────────────────── */
+    .tagline {
+      font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+      font-weight: 300;
       color: var(--lav-60);
-      margin-bottom: 56px;
+      letter-spacing: 0.01em;
+      margin-bottom: 52px;
       opacity: 0;
-      animation: fu .9s .32s var(--ease) forwards;
+      animation: fu .9s .38s var(--ease) forwards;
     }
 
     /* ── NAV ─────────────────────────────────── */
     .nav {
       display: flex; align-items: center; gap: 0;
       opacity: 0;
-      animation: fu .9s .46s var(--ease) forwards;
+      animation: fu .9s .50s var(--ease) forwards;
     }
 
     .sep {
@@ -174,9 +185,9 @@
     /* ── SHIP TAGLINE ────────────────────────── */
     .ship-tagline {
       font-family: var(--mono);
-      font-size: 0.56rem;
-      letter-spacing: 0.14em;
-      color: rgba(196,176,240,0.38);
+      font-size: 0.58rem;
+      letter-spacing: 0.13em;
+      color: rgba(196,176,240,0.62);
       margin-top: 22px;
       opacity: 0;
       animation: fu .9s .62s var(--ease) forwards;
@@ -247,15 +258,10 @@
     .ship:hover { filter: drop-shadow(0 0 14px rgba(196,176,240,0.8)); }
 
     @keyframes enginePulse {
-      0%, 100% { opacity: 0.3; r: 4px; }
-      50%       { opacity: 1;   r: 5px; }
+      0%, 100% { opacity: 0.65; }
+      50%       { opacity: 1; }
     }
-    @keyframes engineOuter {
-      0%, 100% { opacity: 0.12; }
-      50%       { opacity: 0.35; }
-    }
-    .ship-engine       { animation: enginePulse 1.5s ease-in-out infinite; }
-    .ship-engine-outer { animation: engineOuter 1.5s ease-in-out infinite; }
+    .ship-engine { animation: enginePulse 1.2s ease-in-out infinite; }
 
     /* ── SHIP POPUP ──────────────────────────── */
     .ship-popup {
@@ -384,13 +390,9 @@
             stroke="rgba(165,80,255,0.95)" stroke-width="1.4"
             filter="url(#lineGlow)"/>
 
-      <!-- Engine — outer glow ring + core -->
-      <circle class="ship-engine-outer" cx="14" cy="29" r="8"
-              fill="rgba(155,70,255,0.18)"/>
-      <circle class="ship-engine-outer" cx="14" cy="29" r="5.5"
-              fill="rgba(196,176,240,0.22)"/>
-      <circle class="ship-engine" cx="14" cy="29" r="4"
-              fill="rgba(196,176,240,0.9)"/>
+      <!-- Engine core — trail handles the rest -->
+      <circle class="ship-engine" cx="14" cy="29" r="3.5"
+              fill="rgba(225,200,255,0.98)"/>
     </svg>
   </button>
 
@@ -417,8 +419,9 @@
       </svg>
     </div>
 
-    <h1 class="name">Ida Parelius</h1>
     <p class="role">UX / UI Designer</p>
+    <h1 class="name">Ida Parelius</h1>
+    <p class="tagline">jeg designer digitale produkter folk faktisk forstår</p>
 
     <nav class="nav" aria-label="Primær navigasjon">
       <a href="about.html" class="nav-a">About</a>
@@ -428,7 +431,7 @@
       <a href="projects.html" class="nav-a">Projects</a>
     </nav>
 
-    <p class="ship-tagline">Ønsker du å sende meg en mail? Fang flyet da vel ✈</p>
+    <p class="ship-tagline">Kontakt meg? Fang flyet! ✈</p>
 
   </main>
 
@@ -491,23 +494,59 @@
       const closeBtn = document.getElementById('shipClose');
       const mailBtn  = popup.querySelector('.ship-popup-btn');
 
+      // ── Canvas exhaust trail ──────────────────
+      const trailCanvas = document.createElement('canvas');
+      trailCanvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:499;';
+      document.body.appendChild(trailCanvas);
+      const ctx = trailCanvas.getContext('2d');
+
+      const trail = [];
+      const TRAIL_LEN = 48;
+
+      function resizeTrail() {
+        trailCanvas.width  = window.innerWidth;
+        trailCanvas.height = window.innerHeight;
+      }
+      resizeTrail();
+
+      function drawTrail() {
+        ctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+        for (let i = 0; i < trail.length; i++) {
+          const p   = trail[i];
+          const age = i / trail.length;        // 0 = oldest, 1 = newest
+          const alpha  = age * 0.9;
+          const radius = 1.5 + age * 8;
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
+          grad.addColorStop(0,   `rgba(225,200,255,${alpha})`);
+          grad.addColorStop(0.4, `rgba(165,80,255,${(alpha * 0.55).toFixed(3)})`);
+          grad.addColorStop(1,   'rgba(100,40,200,0)');
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
+      }
+
+      // ── Flight state ──────────────────────────
       const PAD = 52;
       let W = window.innerWidth, H = window.innerHeight;
       let sx = PAD + Math.random() * (W - PAD * 2);
       let sy = PAD + Math.random() * (H - PAD * 2);
 
-      // Speed with personality — varies over time
       const SPD_MIN = 0.28, SPD_MAX = 0.62;
       let speed       = 0.45;
       let targetSpeed = speed;
 
-      let angle = Math.random() * Math.PI * 2;
-      let vx    = Math.cos(angle) * speed;
-      let vy    = Math.sin(angle) * speed;
+      let angle   = Math.random() * Math.PI * 2;
+      let vx      = Math.cos(angle) * speed;
+      let vy      = Math.sin(angle) * speed;
       let wobbleT = Math.random() * Math.PI * 2;
-      let paused = false;
+      let paused  = false;
 
-      window.addEventListener('resize', () => { W = window.innerWidth; H = window.innerHeight; });
+      window.addEventListener('resize', () => {
+        W = window.innerWidth; H = window.innerHeight;
+        resizeTrail();
+      });
 
       function place() {
         ship.style.left = (sx - 14) + 'px';
@@ -521,22 +560,18 @@
         if (!paused) {
           wobbleT += 0.028;
 
-          // Gradually drift speed for organic feel
           if (Math.random() < 0.005) {
             targetSpeed = SPD_MIN + Math.random() * (SPD_MAX - SPD_MIN);
           }
           speed += (targetSpeed - speed) * 0.008;
 
-          // Random gentle steering
           if (Math.random() < 0.016) {
             angle = Math.atan2(vy, vx) + (Math.random() - 0.5) * 0.7;
           }
 
-          // Subtle mouse attraction — ship slowly drifts toward cursor
           vx += (mx - sx) * 0.00055;
           vy += (my - sy) * 0.00055;
 
-          // Re-normalise to current speed
           const vLen = Math.sqrt(vx * vx + vy * vy) || speed;
           vx = (vx / vLen) * speed;
           vy = (vy / vLen) * speed;
@@ -546,8 +581,19 @@
           if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); }
           if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); }
           if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); }
+
+          // Engine exhaust position — back of ship (opposite velocity)
+          const exA = Math.atan2(-vy, -vx);
+          trail.push({ x: sx + Math.cos(exA) * 11, y: sy + Math.sin(exA) * 11 });
+          if (trail.length > TRAIL_LEN) trail.shift();
+
           place();
+        } else {
+          // Gradually fade trail when paused
+          if (trail.length > 0) trail.shift();
         }
+
+        drawTrail();
         requestAnimationFrame(tick);
       }
 
@@ -563,6 +609,7 @@
 
       function openPopup() {
         paused = true;
+        popup.style.visibility = '';
         const pw = 210;
         const ph = popup.offsetHeight || 110;
         let px = sx - pw / 2;
@@ -585,8 +632,16 @@
       function closePopup() {
         popup.classList.remove('open');
         paused = false;
-        ship.focus();
+        // Blur any focused element inside popup before it fades
+        if (popup.contains(document.activeElement)) document.activeElement.blur();
       }
+
+      // Fully hide popup after fade-out so backdrop-filter doesn't linger
+      popup.addEventListener('transitionend', e => {
+        if (e.propertyName === 'opacity' && !popup.classList.contains('open')) {
+          popup.style.visibility = 'hidden';
+        }
+      });
 
       closeBtn.addEventListener('click', closePopup);
 
