@@ -410,10 +410,6 @@
         <rect x="9" y="9" width="30" height="30" rx="2"
               transform="rotate(45 24 24)"
               stroke="rgba(244,240,249,0.65)" stroke-width="1.4" fill="none"/>
-        <text x="24" y="28" text-anchor="middle"
-              font-family="Space Mono, monospace"
-              font-size="10" font-weight="700"
-              fill="#F4F0F9" letter-spacing="-0.5">IP</text>
         <circle cx="24" cy="5.5" r="2" fill="#4E3388" opacity="0.7"/>
         <circle cx="24" cy="42.5" r="2" fill="#4E3388" opacity="0.7"/>
       </svg>
@@ -421,14 +417,14 @@
 
     <p class="role">UX / UI Designer</p>
     <h1 class="name">Ida Parelius</h1>
-    <p class="tagline">jeg designer digitale produkter folk faktisk forstår</p>
+    <p class="tagline">Jeg gjør digitale produkter enklere å bruke</p>
 
     <nav class="nav" aria-label="Primær navigasjon">
+      <a href="projects.html" class="nav-a">Projects</a>
+      <div class="sep" aria-hidden="true"></div>
       <a href="about.html" class="nav-a">About</a>
       <div class="sep" aria-hidden="true"></div>
       <a href="cv.html" class="nav-a">CV</a>
-      <div class="sep" aria-hidden="true"></div>
-      <a href="projects.html" class="nav-a">Projects</a>
     </nav>
 
     <p class="ship-tagline">Kontakt meg? Fang flyet! ✈</p>
@@ -501,7 +497,7 @@
       const ctx = trailCanvas.getContext('2d');
 
       const trail = [];
-      const TRAIL_LEN = 48;
+      const TRAIL_LEN = 32;
 
       function resizeTrail() {
         trailCanvas.width  = window.innerWidth;
@@ -577,15 +573,20 @@
           vy = (vy / vLen) * speed;
 
           sx += vx; sy += vy;
-          if (sx < PAD)     { sx = PAD;     vx =  Math.abs(vx); }
-          if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); }
-          if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); }
-          if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); }
+          let bounced = false;
+          if (sx < PAD)     { sx = PAD;     vx =  Math.abs(vx); bounced = true; }
+          if (sx > W - PAD) { sx = W - PAD; vx = -Math.abs(vx); bounced = true; }
+          if (sy < PAD)     { sy = PAD;     vy =  Math.abs(vy); bounced = true; }
+          if (sy > H - PAD) { sy = H - PAD; vy = -Math.abs(vy); bounced = true; }
 
-          // Engine exhaust position — back of ship (opposite velocity)
-          const exA = Math.atan2(-vy, -vx);
-          trail.push({ x: sx + Math.cos(exA) * 11, y: sy + Math.sin(exA) * 11 });
-          if (trail.length > TRAIL_LEN) trail.shift();
+          if (bounced) {
+            // Clear trail on direction change so it never appears in front
+            trail.length = 0;
+          } else {
+            const exA = Math.atan2(-vy, -vx);
+            trail.push({ x: sx + Math.cos(exA) * 15, y: sy + Math.sin(exA) * 15 });
+            if (trail.length > TRAIL_LEN) trail.shift();
+          }
 
           place();
         } else {
